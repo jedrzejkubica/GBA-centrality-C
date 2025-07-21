@@ -5,11 +5,14 @@ CC = gcc
 OBJDIR = Objs
 DEPDIR = Deps
 
-## all objects to make
+## all shared objects to make
 OBJS = $(patsubst %.h,$(OBJDIR)/%.o,$(wildcard *.h))
 
-# binaries
-all: mkdirs testAdjacency countPaths
+# subdir hierarchy, compilation database, and all binaries
+all: mkdirs compile_commands.json allBins
+
+# all binaries
+allBins: testAdjacency countPaths
 
 
 testAdjacency: $(OBJDIR)/testAdjacency.o $(OBJS)
@@ -22,6 +25,12 @@ countPaths: $(OBJDIR)/countPaths.o $(OBJS)
 mkdirs:
 	mkdir -p $(OBJDIR) $(DEPDIR)
 
+# use bear to make a compilation database for LSP (usable by emacs and other IDEs)
+# (install bear with "sudo dnf install bear" on RHEL/Alma/Fedora if you don't have it)
+compile_commands.json:
+	bear -- make allBins
+
+
 # making each object file
 $(OBJDIR)/%.o: %.c Makefile
 	$(CC) $(CFLAGS) -MMD -MF $(DEPDIR)/$*.d -c -o $@ $<
@@ -31,6 +40,6 @@ $(OBJDIR)/%.o: %.c Makefile
 
 
 clean:
-	rm -f $(OBJDIR)/*.o $(DEPDIR)/*.d *~
+	rm -f $(OBJDIR)/*.o $(DEPDIR)/*.d compile_commands.json
 
-.PHONY: mkdirs all clean
+.PHONY: mkdirs all allBins clean
