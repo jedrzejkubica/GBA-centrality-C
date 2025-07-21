@@ -2,13 +2,28 @@
 #include </usr/include/python3.9/pyconfig-64.h>
 
 #include "adjacency.h"
+#include "mem.h"
 
 /*
     this module calls python scripts for parsing the interactome
 */
 
-void *parseInteractome(char *interactomeFile) {
+
+/*
+    the python script should include:
+    args:
+    - interactome_file: str, path to SIF file (3 tab-separated columns: ENSG1 pp ENSG2)
+
+    returns:
+    - nbNodes: int
+    - weights: list of floats, flattened adjacency matrix,
+      weights[i*nbCols + j] contains the weight from node i to node j,
+      note: weights must be 0/1 for unweighted, or in [0, 1] for weighted
+*/
+adjacencyMatrix *parseInteractome(char *interactomeFile) {
     printf("parsing %s\n", interactomeFile);
+
+    adjacencyMatrix *interactome = mallocOrDie(sizeof(adjacencyMatrix), "E: OOM for interactome");
 
     Py_Initialize();
 
@@ -33,12 +48,25 @@ void *parseInteractome(char *interactomeFile) {
 
             if (pOutput != NULL && PyTuple_Check(pOutput)) {
                 PyObject *pNodes = PyTuple_GetItem(pOutput, 0);
-                PyObject *pMatrix = PyTuple_GetItem(pOutput, 1);
-                Py_DECREF(pMatrix);
+                PyObject *pWeights = PyTuple_GetItem(pOutput, 1);
 
-                Py_ssize_t num_nodes = (int) PyLong_AsLong(pNodes);
-                printf("Number of nodes: %zd\n", num_nodes);
+                unsigned int nbNodes = (unsigned int) PyLong_AsLong(pNodes);
+                interactome->nbCols = nbNodes;
 
+                interactome->weights = mallocOrDie(nbNodes * nbNodes * sizeof(float), "E: OOM for interactome weights");
+
+                for (size_t i = 0; i < nbNodes * nbNodes; i++) {
+                    PyObject *w = PyList_GetItem(pWeights, i);
+
+                    if (!PyFloat_Check(w)) {
+                        fprintf(stderr, "List item %zd is not a float\n", i);
+                    }
+
+                    double tmp = PyFloat_AsDouble(w);
+                    float val = (float)tmp;
+                    interactome->weights[i] = val;
+                }
+                
                 Py_DECREF(pOutput);
             } else {
                 PyErr_Print();
@@ -51,7 +79,8 @@ void *parseInteractome(char *interactomeFile) {
     } else {
         PyErr_Print();
     }
+
     Py_Finalize();
 
-    return 0;
+    return interactome;
 }
