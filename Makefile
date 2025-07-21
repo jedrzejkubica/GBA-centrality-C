@@ -1,5 +1,5 @@
-LDFLAGS = -lm
-CFLAGS = -g -Wall -Wextra -std=c17
+LDFLAGS = -lm -lpython3.9
+CFLAGS = -g -Wall -Wextra -std=c17 -I/usr/include/python3.9
 CC = gcc
 
 OBJDIR = Objs
