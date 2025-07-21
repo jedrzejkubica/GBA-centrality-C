@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 #include "parseInteractome.h"
 #include "adjacency.h"
@@ -56,12 +57,32 @@ int main(void) {
     // freeCompactAdjacency(diam4comp);
     // freeAdjacency(diam4);
 
+    clock_t start, end;
+    double cpu_time_used;
+
+    start = clock();
+
     char *interactomeFilePath = "Interactome/interactome.sif";
     adjacencyMatrix *interactome = parseInteractome(interactomeFilePath);
+    printf("number of nodes: %d\n", interactome->nbCols);
 
-    printf("Number of nodes: %d\n", interactome->nbCols);
+    compactAdjacencyMatrix *interactomeComp = adjacency2compact(interactome);
+    printf("number of nodes (compact): %d\n", interactomeComp->nbNodes);
 
+    pathCountsWithPredMatrix *interactomePathCountsWithPred = buildFirstPathCounts(interactomeComp);
+    printf("done building interactomePathCountsWithPred\n");
+
+    pathCountsWithPredMatrix *interactomeD2 = buildNextPathCounts(interactomePathCountsWithPred, interactomeComp);
+    printf("done building interactomeD2\n");
+
+    freePathCountsWithPred(interactomeD2);
+    freePathCountsWithPred(interactomePathCountsWithPred);
+    freeCompactAdjacency(interactomeComp);
     freeAdjacency(interactome);
+
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("it all took: %f sec\n", cpu_time_used);
 
     return(0);
 }
