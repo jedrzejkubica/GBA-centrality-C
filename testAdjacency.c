@@ -60,7 +60,6 @@ int main(void) {
     adjacencyMatrix *interactome = parseInteractome(interactomeFilePath);
 
     printf("Number of nodes: %d\n", interactome->nbCols);
-    printAdjacency(interactome);
 
     freeAdjacency(interactome);
 
