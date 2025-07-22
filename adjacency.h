@@ -6,8 +6,11 @@
 */
 
 /*
+    An adjacencyMatrix is a square matrix of size nbCols*nbCols, therefore
+    weights MUST be large enough to store nbCols*nbCols floats.
+
     weights[i*nbCols + j] contains the weight from node i to node j
-    note: weights must be 0/1 for unweighted, or in [0, 1] for weighted
+    NOTE: weights must be 0/1 for unweighted, or in [0, 1] for weighted
 */
 typedef struct {
     unsigned int nbCols;
