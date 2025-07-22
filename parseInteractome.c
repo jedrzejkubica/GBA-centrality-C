@@ -27,9 +27,9 @@ adjacencyMatrix *parseInteractome(char *interactomeFile) {
 
     Py_Initialize();
 
-    PyRun_SimpleString("import sys; sys.path.append(\"Interactome/\")");
+    PyRun_SimpleString("import sys; sys.path.append(\".\")");
 
-    PyObject *pName = PyUnicode_FromString("interactome");
+    PyObject *pName = PyUnicode_FromString("parseInteractome");
     PyObject *pModule = PyImport_Import(pName);
     Py_DECREF(pName);  // free allocated memory
 
