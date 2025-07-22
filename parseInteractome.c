@@ -35,7 +35,7 @@ adjacencyMatrix *parseInteractome(char *interactomeFile) {
     if (pModule != NULL) {
         PyObject *pFunction = PyObject_GetAttrString(pModule, "parse_interactome");
 
-        if (pFunction && PyCallable_Check(pFunction)) {
+        if ((pFunction != NULL) && PyCallable_Check(pFunction)) {
             /*
                 parse_interactome() expects a filename (str),
                 pArgs must be a touple
@@ -65,15 +65,14 @@ adjacencyMatrix *parseInteractome(char *interactomeFile) {
                     float val = (float)tmp;
                     interactome->weights[i] = val;
                 }
-                
                 Py_DECREF(pOutput);
             } else {
                 PyErr_Print();
             }
-            Py_XDECREF(pFunction);
         } else {
             if (PyErr_Occurred()) PyErr_Print();
         }
+        Py_XDECREF(pFunction);
         Py_DECREF(pModule);
     } else {
         PyErr_Print();
