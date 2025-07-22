@@ -1,5 +1,4 @@
-#include </usr/include/python3.9/Python.h>
-#include </usr/include/python3.9/pyconfig-64.h>
+#include <Python.h>
 
 #include "adjacency.h"
 #include "mem.h"
