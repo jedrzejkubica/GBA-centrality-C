@@ -8,7 +8,7 @@
 geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
     // sanity check:
     if (A->nbCols != causal->nbGenes) {
-	fprintf(stderr, "");
+	fprintf(stderr, "E: gbaCentrality() called with adjacency matrix and causal genes of different sizes");
 	exit(1);
     }
 
