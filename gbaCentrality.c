@@ -29,8 +29,8 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
     pathCountsWithPredMatrix *interactomeNext = NULL;
 	float alphaPowK = alpha;
     for (size_t k = 1; k < maxDistance; k++) {
-        printf("calculating A**%ld\n", k+1);
         interactomeNext = buildNextPathCounts(interactomePathCountsWithPred, interactomeComp);
+        fprintf(stderr, "I: calculating B_%ld\n", k+1);
         
         pathCountsMatrix *interactomePathCounts = countPaths(interactomeNext, interactomeComp);
 
