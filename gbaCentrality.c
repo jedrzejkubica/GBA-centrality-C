@@ -15,10 +15,11 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
         fprintf(stderr, "E: gbaCentrality() called with adjacency matrix and causal genes of different sizes");
         exit(1);
     }
+	unsigned int nbGenes = causal->nbGenes;
 
     geneScores *scores = mallocOrDie(sizeof(geneScores), "E: OOM for scores");
-    scores->nbGenes = causal->nbGenes;
-    scores->scores = mallocOrDie(causal->nbGenes * sizeof(float), "E: OOM for scores->scores");
+    scores->nbGenes = nbGenes;
+    scores->scores = mallocOrDie(nbGenes * sizeof(float), "E: OOM for scores->scores");
 	// start by copying causal scores, ie scores = alpha**0 * I * casual
 	memcpy(scores->scores, causal->scores, nbGenes * sizeof(float));
 
@@ -34,9 +35,9 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
         
         pathCountsMatrix *interactomePathCounts = countPaths(pathCountsNext, interactomeComp);
 
-        for (size_t i = 0; i < interactomePathCounts->nbCols; i++) {
-            for (size_t j = 0; j < interactomePathCounts->nbCols; j++) {
-                scores->scores[i] += alphaPowK * interactomePathCounts->data[i * interactomePathCounts->nbCols + j] * causal->scores[i];
+        for (size_t i = 0; i < nbGenes; i++) {
+            for (size_t j = 0; j < nbGenes; j++) {
+                scores->scores[i] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
             }
         }
 		alphaPowK *= alpha;
