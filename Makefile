@@ -9,14 +9,10 @@ DEPDIR = Deps
 OBJS = $(patsubst %.h,$(OBJDIR)/%.o,$(wildcard *.h))
 
 # subdir hierarchy, compilation database, and all binaries
-all: mkdirs compile_commands.json allBins gbaCentrality.so
+all: mkdirs compile_commands.json allBins
 
 # all binaries
 allBins: testAdjacency gbaCentrality.so
-
-gbaCentrality.so: $(OBJDIR)/gbaCentrality.o $(OBJS)
-	$(CC) -shared -o $@ $^ $(LDFLAGS)
-
 
 testAdjacency: $(OBJDIR)/testAdjacency.o $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
