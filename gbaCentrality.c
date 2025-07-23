@@ -47,7 +47,6 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
 
     freePathCountsWithPred(interactomeNext);
     freeCompactAdjacency(interactomeComp);
-    freeAdjacency(A);
 
     return(scores);
 }
