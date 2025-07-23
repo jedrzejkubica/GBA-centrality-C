@@ -22,7 +22,7 @@ adjacencyMatrix *diamond4(void) {
     diamond4->weights[8] = 1;
     diamond4->weights[11] = 1;
     diamond4->weights[13] = 1;
-    diamond4->weights[14] = 10;
+    diamond4->weights[14] = 1;
     // add a self-interaction 4->4 for testing
     diamond4->weights[15] = 1;
     return(diamond4);
@@ -37,12 +37,10 @@ geneScores *causalGenes(void) {
         causal->scores[i] = 0;
 
     causal->scores[0] = 1;
-    causal->scores[4] = 1;
+    causal->scores[3] = 1;
 
     return(causal);
 }
-
-
 
 int main(void) {
     adjacencyMatrix *diam4 = diamond4();
@@ -53,30 +51,9 @@ int main(void) {
     printf("causal genes\n");
     printScores(causal);
 
-    compactAdjacencyMatrix *diam4comp = adjacency2compact(diam4);
-
-    unsigned int maxDistance = 5;
-
-    pathCountsWithPredMatrix *diam4PathCountsWithPred = buildFirstPathCounts(diam4comp);
-
-    pathCountsWithPredMatrix *diam4Next = NULL;
-
-    for (size_t i = 1; i < maxDistance; i++) {
-        diam4Next = buildNextPathCounts(diam4PathCountsWithPred, diam4comp);
-        
-        pathCountsMatrix *diam4PathCounts = countPaths(diam4Next, diam4comp);
-        printf("diam4 path counts D=%lu\n", i+1);
-        printPathCounts(diam4PathCounts);
-        freePathCounts(diam4PathCounts);
-
-        freePathCountsWithPred(diam4PathCountsWithPred);
-        diam4PathCountsWithPred = diam4Next;
-    }
-
-    freePathCountsWithPred(diam4Next);
-    freeCompactAdjacency(diam4comp);
-    freeScores(causal);
-    freeAdjacency(diam4);
+    geneScores *scores = gbaCentrality(diam4, causal, 0.5);
+    printf("scores\n");
+    printScores(scores);
 
     return(0);
 }

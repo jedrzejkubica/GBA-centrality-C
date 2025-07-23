@@ -23,7 +23,7 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
         scores->scores[i] = 0.0;
     }
 
-    unsigned int maxDistance = 2;
+    unsigned int maxDistance = 5;
 
     compactAdjacencyMatrix *interactomeComp = adjacency2compact(A);
     pathCountsWithPredMatrix *interactomePathCountsWithPred = buildFirstPathCounts(interactomeComp);
