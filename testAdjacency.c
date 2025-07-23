@@ -54,6 +54,9 @@ int main(void) {
     geneScores *scores = gbaCentrality(diam4, causal, 0.5);
     printf("scores\n");
     printScores(scores);
+	freeAdjacency(diam4);
+	freeScores(scores);
+	freeScores(causal);
 
     return(0);
 }
