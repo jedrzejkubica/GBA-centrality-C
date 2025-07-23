@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h> 
 
 #include "gbaCentrality.h"
 #include "compactAdjacency.h"
@@ -28,6 +27,7 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
     compactAdjacencyMatrix *interactomeComp = adjacency2compact(A);
     pathCountsWithPredMatrix *interactomePathCountsWithPred = buildFirstPathCounts(interactomeComp);
     pathCountsWithPredMatrix *interactomeNext = NULL;
+	float alphaPowK = alpha;
     for (size_t k = 1; k < maxDistance; k++) {
         printf("calculating A**%ld\n", k+1);
         interactomeNext = buildNextPathCounts(interactomePathCountsWithPred, interactomeComp);
@@ -36,9 +36,10 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
 
         for (size_t i = 0; i < interactomePathCounts->nbCols; i++) {
             for (size_t j = 0; j < interactomePathCounts->nbCols; j++) {
-                scores->scores[i] += pow(alpha, k) * interactomePathCounts->data[i * interactomePathCounts->nbCols + j] * causal->scores[i];
+                scores->scores[i] += alphaPowK * interactomePathCounts->data[i * interactomePathCounts->nbCols + j] * causal->scores[i];
             }
         }
+		alphaPowK *= alpha;
         freePathCounts(interactomePathCounts);
         freePathCountsWithPred(interactomePathCountsWithPred);
         interactomePathCountsWithPred = interactomeNext;
