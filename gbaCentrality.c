@@ -25,14 +25,14 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
     unsigned int maxDistance = 5;
 
     compactAdjacencyMatrix *interactomeComp = adjacency2compact(A);
-    pathCountsWithPredMatrix *interactomePathCountsWithPred = buildFirstPathCounts(interactomeComp);
-    pathCountsWithPredMatrix *interactomeNext = NULL;
+    pathCountsWithPredMatrix *pathCountsCurrent = buildFirstPathCounts(interactomeComp);
+    pathCountsWithPredMatrix *pathCountsNext = NULL;
 	float alphaPowK = alpha;
     for (size_t k = 1; k < maxDistance; k++) {
-        interactomeNext = buildNextPathCounts(interactomePathCountsWithPred, interactomeComp);
         fprintf(stderr, "I: calculating B_%ld\n", k+1);
+        pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomeComp);
         
-        pathCountsMatrix *interactomePathCounts = countPaths(interactomeNext, interactomeComp);
+        pathCountsMatrix *interactomePathCounts = countPaths(pathCountsNext, interactomeComp);
 
         for (size_t i = 0; i < interactomePathCounts->nbCols; i++) {
             for (size_t j = 0; j < interactomePathCounts->nbCols; j++) {
@@ -41,11 +41,11 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
         }
 		alphaPowK *= alpha;
         freePathCounts(interactomePathCounts);
-        freePathCountsWithPred(interactomePathCountsWithPred);
-        interactomePathCountsWithPred = interactomeNext;
+        freePathCountsWithPred(pathCountsCurrent);
+        pathCountsCurrent = pathCountsNext;
     }
 
-    freePathCountsWithPred(interactomeNext);
+    freePathCountsWithPred(pathCountsNext);
     freeCompactAdjacency(interactomeComp);
 
     return(scores);
