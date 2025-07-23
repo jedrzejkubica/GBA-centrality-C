@@ -12,13 +12,10 @@ OBJS = $(patsubst %.h,$(OBJDIR)/%.o,$(wildcard *.h))
 all: mkdirs compile_commands.json allBins
 
 # all binaries
-allBins: testAdjacency countPaths
+allBins: testAdjacency
 
 
 testAdjacency: $(OBJDIR)/testAdjacency.o $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
-
-countPaths: $(OBJDIR)/countPaths.o $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 # make subdirs if they don't exist yet
