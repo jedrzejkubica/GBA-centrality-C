@@ -1,5 +1,5 @@
 LDFLAGS = -lm
-CFLAGS = -g -Wall -Wextra -std=c17 -fPIC
+CFLAGS = -g -Wall -Wextra -std=c17 -fPIC -fvisibility=hidden
 CC = gcc
 
 OBJDIR = Objs
@@ -12,7 +12,7 @@ OBJS = $(patsubst %.h,$(OBJDIR)/%.o,$(wildcard *.h))
 all: mkdirs compile_commands.json allBins gbaCentrality.so
 
 # all binaries
-allBins: testAdjacency
+allBins: testAdjacency gbaCentrality.so
 
 gbaCentrality.so: $(OBJDIR)/gbaCentrality.o $(OBJS)
 	$(CC) -shared -o $@ $^ $(LDFLAGS)
@@ -20,6 +20,9 @@ gbaCentrality.so: $(OBJDIR)/gbaCentrality.o $(OBJS)
 
 testAdjacency: $(OBJDIR)/testAdjacency.o $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
+
+gbaCentrality.so: $(OBJS)
+	$(CC) $(LDFLAGS) -shared -o $@ $^
 
 # make subdirs if they don't exist yet
 mkdirs:

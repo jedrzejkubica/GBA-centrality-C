@@ -1,5 +1,5 @@
 *.d
 *.o
 compile_commands.json
-countPaths
 testAdjacency
+gbaCentrality.so
