@@ -1,5 +1,5 @@
 LDFLAGS = -lm
-CFLAGS = -g -Wall -Wextra -std=c17
+CFLAGS = -g -Wall -Wextra -std=c17 -fPIC
 CC = gcc
 
 OBJDIR = Objs
@@ -9,10 +9,13 @@ DEPDIR = Deps
 OBJS = $(patsubst %.h,$(OBJDIR)/%.o,$(wildcard *.h))
 
 # subdir hierarchy, compilation database, and all binaries
-all: mkdirs compile_commands.json allBins
+all: mkdirs compile_commands.json allBins gbaCentrality.so
 
 # all binaries
 allBins: testAdjacency
+
+gbaCentrality.so: $(OBJDIR)/gbaCentrality.o $(OBJS)
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
 
 
 testAdjacency: $(OBJDIR)/testAdjacency.o $(OBJS)
@@ -37,6 +40,6 @@ $(OBJDIR)/%.o: %.c Makefile
 
 
 clean:
-	rm -f $(OBJDIR)/*.o $(DEPDIR)/*.d compile_commands.json
+	rm -f $(OBJDIR)/*.o $(DEPDIR)/*.d compile_commands.json testAdjacency gbaCentrality.so
 
 .PHONY: mkdirs all allBins clean
