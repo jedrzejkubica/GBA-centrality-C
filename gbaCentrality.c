@@ -35,7 +35,7 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
         pathCountsMatrix *interactomePathCounts = countPaths(pathCountsCurrent, interactomeComp);
         for (size_t i = 0; i < nbGenes; i++) {
             for (size_t j = 0; j < nbGenes; j++) {
-                scores->scores[i] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
+                scores->scores[j] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
             }
         }
         freePathCounts(interactomePathCounts);
