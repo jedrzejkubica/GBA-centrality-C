@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "gbaCentrality.h"
 #include "compactAdjacency.h"
@@ -18,9 +19,8 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
     geneScores *scores = mallocOrDie(sizeof(geneScores), "E: OOM for scores");
     scores->nbGenes = causal->nbGenes;
     scores->scores = mallocOrDie(causal->nbGenes * sizeof(float), "E: OOM for scores->scores");
-    for (size_t i = 0; i < scores->nbGenes; i++) {
-        scores->scores[i] = 0.0;
-    }
+	// start by copying causal scores, ie scores = alpha**0 * I * casual
+	memcpy(scores->scores, causal->scores, nbGenes * sizeof(float));
 
     unsigned int maxDistance = 5;
 
