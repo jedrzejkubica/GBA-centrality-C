@@ -1,9 +1,7 @@
 #include <stdio.h>
 
 #include "adjacency.h"
-#include "compactAdjacency.h"
-#include "pathCountsWithPredecessors.h"
-#include "pathCounts.h"
+#include "scores.h"
 #include "gbaCentrality.h"
 #include "mem.h"
 
