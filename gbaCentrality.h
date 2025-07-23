@@ -2,17 +2,9 @@
 #define _GBACENTRALITY_H_
 
 #include "adjacency.h"
-
+#include "scores.h"
 
 /*
-    Store one score per gene, each score is a float >=0.
-    scores MUST be large enough to store nbGenes floats.
- */
-typedef struct {
-    unsigned int nbGenes;
-    float *scores;
-} geneScores;
-
 
 /*
     Given a network represented by A and some seed nodes (eg known causal genes),
@@ -23,9 +15,5 @@ typedef struct {
     Returns a pointer to a newly allocated structure.
 */
 geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha);
-
-void printScores(geneScores *scores);
-
-void freeScores(geneScores *scores);
 
 #endif
