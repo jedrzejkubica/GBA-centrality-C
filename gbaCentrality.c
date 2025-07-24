@@ -9,7 +9,7 @@
 #include "mem.h"
 
 
-geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
+void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScores *scores) {
     // sanity check:
     if (A->nbCols != causal->nbGenes) {
         fprintf(stderr, "E: gbaCentrality() called with adjacency matrix and causal genes of different sizes");
@@ -17,7 +17,6 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
     }
 	unsigned int nbGenes = causal->nbGenes;
 
-    geneScores *scores = mallocOrDie(sizeof(geneScores), "E: OOM for scores");
     scores->nbGenes = nbGenes;
     scores->scores = mallocOrDie(nbGenes * sizeof(float), "E: OOM for scores->scores");
 	// start by copying causal scores, ie scores = alpha**0 * I * casual
@@ -51,5 +50,4 @@ geneScores *gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha) {
 
     freePathCountsWithPred(pathCountsCurrent);
     freeCompactAdjacency(interactomeComp);
-    return(scores);
 }
