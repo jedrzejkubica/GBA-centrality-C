@@ -4,7 +4,6 @@
 
 #include "gbaCentrality.h"
 #include "compactAdjacency.h"
-#include "pathCountsWithPredecessors.h"
 #include "pathCounts.h"
 #include "mem.h"
 
