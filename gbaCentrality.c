@@ -17,14 +17,13 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
     }
 	unsigned int nbGenes = causal->nbGenes;
 
-    scores->nbGenes = nbGenes;
-    scores->scores = mallocOrDie(nbGenes * sizeof(float), "E: OOM for scores->scores");
 	// start by copying causal scores, ie scores = alpha**0 * I * casual
 	memcpy(scores->scores, causal->scores, nbGenes * sizeof(float));
 
     unsigned int maxDistance = 5;
 
     compactAdjacencyMatrix *interactomeComp = adjacency2compact(A);
+    fprintf(stderr, "I: calculating B_1\n");
     pathCountsWithPredMatrix *pathCountsCurrent = buildFirstPathCounts(interactomeComp);
     pathCountsWithPredMatrix *pathCountsNext = NULL;
 	float alphaPowK = 1;
