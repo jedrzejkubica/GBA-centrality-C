@@ -16,7 +16,7 @@
     the network.
     In "causal", each score must be in [0,1] and most should be 0.
     "alpha" is the GBA-centrality parameter, it must be in ]0,1[, typically 0.5 is good.
-    Modifies scores in-place.
+    "scores" must be allocated and will be filled in-place.
 */
 void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScores *scores);
 
