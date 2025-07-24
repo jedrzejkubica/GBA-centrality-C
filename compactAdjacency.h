@@ -20,12 +20,18 @@
 
     the corresponding edge weights (coming into node j) are weights[offsets[j]]
     up to weights[offsets[j+1]-1]
+
+    offsetsReverseEdge has sumOfDegrees elements (same as predecessors and weights),
+    for any i < sumOfDegrees offsetsReverseEdge[i] is the offset corresponding to 
+    edge j->p (assuming i is the offset of edge p->j) if j->p exists, sumOfDegrees
+    otherwise
 */
 typedef struct {
     unsigned int nbNodes;
     size_t *offsets;
     unsigned int *predecessors;
     float *weights;
+    size_t *offsetsReverseEdge;
 } compactAdjacencyMatrix;
 
 compactAdjacencyMatrix *adjacency2compact(adjacencyMatrix *A);

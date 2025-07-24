@@ -1,4 +1,5 @@
 #include "pathCountsWithPredecessors.h"
+#include "pathCounts.h"
 #include "compactAdjacency.h"
 #include "adjacency.h"
 #include "mem.h"
@@ -23,7 +24,8 @@ pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact) 
     return pathCounts;
 }
 
-pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCounts, compactAdjacencyMatrix *compact) {
+pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCountsWithPred, pathCountsMatrix *pathCounts,
+											  compactAdjacencyMatrix *compact) {
     unsigned int nbNodes = compact->nbNodes;
     unsigned int sumDegrees = compact->offsets[nbNodes];
     
@@ -37,14 +39,10 @@ pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCoun
                 // we want to ignore loops so path count is zero if i==j
                 if (i != j) {
                     unsigned int p = compact->predecessors[offset];
-                    /* calculate the sum of path weights from i to j with penultimate node p
-                    => we need to sum the paths from i to p but skip the one whose penultimate
-                    node was j */
-                    for (size_t offsetPredOfP = compact->offsets[p]; offsetPredOfP < compact->offsets[p+1]; offsetPredOfP++) {
-                        // skip if current predecessor of p is j
-                        if (compact->predecessors[offsetPredOfP] != j)
-                        sum += pathCounts->data[i * sumDegrees + offsetPredOfP];
-                    }
+					sum = pathCounts->data[i * nbNodes + p];
+					if (compact->offsetsReverseEdge[offset] < sumDegrees) {
+						sum -= compact->offsetsReverseEdge[offset];
+					}
                     sum *= compact->weights[offset];
                 }
                 nextPathCounts->data[i * sumDegrees + offset] = sum;

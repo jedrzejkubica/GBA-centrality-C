@@ -2,6 +2,7 @@
 #define _PATHCOUNTSWITHPREDECESSORS_H_
 
 #include "compactAdjacency.h"
+#include "pathCounts.h"
 
 /*
     this module defines the matrix of path counts with predecessors
@@ -33,8 +34,9 @@ pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact);
     (excluding paths looping back to the starting node),
     return a pointer to a freshly allocated structure;
 */
-pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCounts,
-					      compactAdjacencyMatrix *compact);
+pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCountsWithPred, pathCountsMatrix *pathCounts,
+											  compactAdjacencyMatrix *compact);
+
 
 void freePathCountsWithPred(pathCountsWithPredMatrix *pathCounts);
 
