@@ -36,15 +36,15 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
                 scores->scores[j] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
             }
         }
-        freePathCounts(interactomePathCounts);
 
 		if (k < maxDistance) {
 			// build B_(k+1) for next iteration
 			fprintf(stderr, "I: calculating B_%ld\n", k+1);
-			pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomeComp);
+			pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomePathCounts, interactomeComp);
 			freePathCountsWithPred(pathCountsCurrent);
 			pathCountsCurrent = pathCountsNext;
         }
+        freePathCounts(interactomePathCounts);
     }
 
     freePathCountsWithPred(pathCountsCurrent);
