@@ -15,9 +15,11 @@
     offsets[j] is the first index corresponding to node j in predecessors and weights,
     offsets[nbNodes] is the sum of degrees, used to avoid overflowing;
 
-    nodes with an edge going into node j are nodes predecessors[offsets[j]] up to predecessors[offsets[j+1]-1];
+    nodes with an edge going into node j are nodes predecessors[offsets[j]]
+    up to predecessors[offsets[j+1]-1];
 
-    the corresponding edge weights (coming into node j) are weights[offsets[j]] up to weights[offsets[j+1]-1]
+    the corresponding edge weights (coming into node j) are weights[offsets[j]]
+    up to weights[offsets[j+1]-1]
 */
 typedef struct {
     unsigned int nbNodes;
