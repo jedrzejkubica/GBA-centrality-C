@@ -49,11 +49,15 @@ int main(void) {
     printf("causal genes\n");
     printScores(causal);
 
-    geneScores *scores = gbaCentrality(diam4, causal, 0.5);
+	geneScores *result = mallocOrDie(sizeof(geneScores), "E: OOM for result scores");
+    result->nbGenes = 4;
+    result->scores = mallocOrDie(4 * sizeof(float), "E: OOM for result scores");
+
+	gbaCentrality(diam4, causal, 0.5, result);
     printf("scores\n");
-    printScores(scores);
+    printScores(result);
 	freeAdjacency(diam4);
-	freeScores(scores);
+	freeScores(result);
 	freeScores(causal);
 
     return(0);
