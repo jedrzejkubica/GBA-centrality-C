@@ -42,7 +42,7 @@ pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCoun
                     unsigned int p = compact->predecessors[offset];
 					sum = pathCounts->data[i * nbNodes + p];
 					if (compact->offsetsReverseEdge[offset] < sumDegrees) {
-						sum -= compact->offsetsReverseEdge[offset];
+						sum -= pathCountsWithPred->data[i * sumDegrees + compact->offsetsReverseEdge[offset]];
 					}
                     sum *= compact->weights[offset];
                 }
