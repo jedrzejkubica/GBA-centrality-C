@@ -1,4 +1,5 @@
 import ctypes
+import numpy
 
 
 def GBA_centrality():
@@ -23,8 +24,13 @@ def GBA_centrality():
     gbaLibrary.gbaCentrality.restype = None
 
     # generate structures: adjacencyMatrix, geneScores
-    weights = [0.00, 0.20, 0.50, 0.00, 0.40, 0.00, 0.00, 1.00, 1.00, 0.00, 0.00, 1.00, 0.00, 1.00, 1.00, 1.00]
-    weights_ctype = (ctypes.c_float * len(weights))(*weights)
+    weights = numpy.array([[0.00, 0.20, 0.50, 0.00],
+                           [0.40, 0.00, 0.00, 1.00],
+                           [1.00, 0.00, 0.00, 1.00],
+                           [0.00, 1.00, 1.00, 1.00]], dtype=numpy.float32)
+    weights_1D = weights.flatten()
+    print(weights_1D)
+    weights_ctype = (ctypes.c_float * len(weights_1D))(*weights_1D)
     A = adjacencyMatrix(nbCols=4,
                         weights=weights_ctype)
 
