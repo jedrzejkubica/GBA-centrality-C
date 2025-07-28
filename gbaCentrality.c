@@ -22,7 +22,7 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
     unsigned int maxDistance = 2;
 
     compactAdjacencyMatrix *interactomeComp = adjacency2compact(A);
-    fprintf(stderr, "I: calculating B_1\n");
+    fprintf(stderr, "INFO gbaCentrality.so: calculating B_1\n");
     pathCountsWithPredMatrix *pathCountsCurrent = buildFirstPathCounts(interactomeComp);
     pathCountsWithPredMatrix *pathCountsNext = NULL;
 	float alphaPowK = 1;
