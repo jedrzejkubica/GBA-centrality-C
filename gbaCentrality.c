@@ -19,7 +19,7 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
 	// start by copying causal scores, ie scores = alpha**0 * I * casual
 	memcpy(scores->scores, causal->scores, nbGenes * sizeof(float));
 
-    unsigned int maxDistance = 5;
+    unsigned int maxDistance = 2;
 
     compactAdjacencyMatrix *interactomeComp = adjacency2compact(A);
     fprintf(stderr, "I: calculating B_1\n");
