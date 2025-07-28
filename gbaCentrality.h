@@ -20,4 +20,6 @@
 */
 void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScores *scores);
 
+char *getLocalTime();
+
 #endif
