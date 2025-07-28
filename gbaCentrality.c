@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "gbaCentrality.h"
 #include "compactAdjacency.h"
@@ -38,7 +39,8 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
 
 		if (k < maxDistance) {
 			// build B_(k+1) for next iteration
-			fprintf(stderr, "I: calculating B_%ld\n", k+1);
+            char *localTime = getLocalTime();
+			fprintf(stderr, "%s INFO gbaCentrality.so: calculating B_%ld\n", localTime, k+1);
 			pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomePathCounts, interactomeComp);
 			freePathCountsWithPred(pathCountsCurrent);
 			pathCountsCurrent = pathCountsNext;
@@ -48,4 +50,10 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
 
     freePathCountsWithPred(pathCountsCurrent);
     freeCompactAdjacency(interactomeComp);
+}
+
+char *getLocalTime() {
+    time_t now = time(NULL);
+    struct tm *local_time = localtime(&now);
+    return asctime(local_time);
 }
