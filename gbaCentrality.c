@@ -31,11 +31,17 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
 		// scores += alpha**k * B_k * causal
 		alphaPowK *= alpha;
         pathCountsMatrix *interactomePathCounts = countPaths(pathCountsCurrent, interactomeComp);
+        rowSums *sums = sumRowElements(interactomePathCounts);  // for row-wise normalization of interactomePathCounts
         for (size_t i = 0; i < nbGenes; i++) {
             for (size_t j = 0; j < nbGenes; j++) {
-                scores->scores[j] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
+                if (sums->data[i] == 0) {
+                    scores->scores[j] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
+                } else {
+                    scores->scores[j] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] / sums->data[i] * causal->scores[i];
+                }
             }
         }
+        freeRowSums(sums);
 
 		if (k < maxDistance) {
 			// build B_(k+1) for next iteration
@@ -52,8 +58,23 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
     freeCompactAdjacency(interactomeComp);
 }
 
-char *getLocalTime() {
-    time_t now = time(NULL);
-    struct tm *local_time = localtime(&now);
-    return asctime(local_time);
+rowSums *sumRowElements(pathCountsMatrix *pathCounts) {
+    rowSums *sums = mallocOrDie(sizeof(rowSums), "E: OOM for row sums\n");\
+    unsigned int nbNodes = pathCounts->nbCols;
+    sums->nbNodes = nbNodes;
+    sums->data = mallocOrDie(sizeof(unsigned int) * nbNodes, "E: OOM for row sums data\n");
+    for (size_t i = 0; i < sums->nbNodes; i++) {
+        sums->data[i] = 0;
+        for (size_t j = 0; j < pathCounts->nbCols; j++) {
+            sums->data[i] += pathCounts->data[i * pathCounts->nbCols + j];
+        }
+    }
+    return sums;
+}
+
+void freeRowSums(rowSums *sums) {
+    if (sums) {
+        free(sums->data);
+        free(sums);
+    }
 }

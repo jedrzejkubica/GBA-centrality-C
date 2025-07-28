@@ -1,6 +1,7 @@
 #ifndef _GBACENTRALITY_H_
 #define _GBACENTRALITY_H_
 
+#include "pathCounts.h"
 #include "adjacency.h"
 #include "scores.h"
 
@@ -9,6 +10,14 @@
   -> we will compile with -fvisibility=hidden and changed to "default" here
 */
 #pragma GCC visibility push(default)
+
+/*
+  rowSums[i] is the sum of elements in the i-th row of a pathCountsMatrix
+*/
+typedef struct {
+    unsigned int nbNodes;
+    float *data;
+} rowSums;
 
 /*
     Given a network represented by A and some seed nodes (eg known causal genes),
@@ -20,6 +29,11 @@
 */
 void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScores *scores);
 
-char *getLocalTime();
+/*
+    this is used to normalize the rows of interactomePathCounts later
+*/
+rowSums *sumRowElements(pathCountsMatrix *pathCounts);
+
+void freeRowSums(rowSums *sums);
 
 #endif
