@@ -70,6 +70,17 @@ rowSums *sumRowElements(pathCountsMatrix *pathCounts) {
     return sums;
 }
 
+float calculateScoresDiff(geneScores *scores, geneScores *scoresPrev) {
+    float scoresDiff = 0;
+    for (size_t i = 0; i < scores->nbGenes; i++) {
+        float diff = scores->scores[i] - scoresPrev->scores[i];
+        scoresDiff += diff * diff;
+    }
+    scoresDiff = sqrt(scoresDiff);  // L2 norm
+
+    return scoresDiff;
+}
+
 void freeRowSums(rowSums *sums) {
     if (sums) {
         free(sums->data);

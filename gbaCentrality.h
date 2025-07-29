@@ -34,6 +34,8 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
 */
 rowSums *sumRowElements(pathCountsMatrix *pathCounts);
 
+float calculateScoresDiff(geneScores *scores, geneScores *scoresPrev);
+
 void freeRowSums(rowSums *sums);
 
 #endif
