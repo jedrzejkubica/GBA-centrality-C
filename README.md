@@ -1,16 +1,23 @@
 # GBA-centrality-C
 
-This repository contains the code for GBA-centrality.
+This repository contains the code for GBA centrality.
 
-run `make` to generate a library gbaCentrality.so
+### How to use this repository
 
-It contains the gbaCentrality() function, defined in gbaCentrality.h
+```
+git clone https://github.com/jedrzejkubica/GBA-centrality-C.git
+```
 
-It takes as input:
-- pointer to memory allocated for a adjacencyMatrix structure as defined in adjacency.h
-- pointer to memory allocated for a geneScores structure (seed scores) as defined in scores.h
+```
+make
+```
+
+`make` generates an executable testAdjacency and a library gbaCentrality.so. The library contains the gbaCentrality() function. It takes as input:
+- pointer to memory allocated for an adjacencyMatrix structure (as defined in adjacency.h)
+- pointer to memory allocated for a geneScores structure (as defined in scores.h)
 - alpha (attenuation parameter)
-- pointer to memory allocated for a geneScores structure (for final scores)
+- pointer to memory allocated for a geneScores structure (to allocate final scores)
 
-Required dependencies:
+### Dependencies:
+
 - bear
