@@ -58,6 +58,7 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
 
         // calculate the difference between scores for B_k-1 and B_k
         scoresDiff = calculateScoresDiff(scores, scoresPrev);
+        fprintf(stderr, "INFO gbaCentrality.so: scoresDiff = %f\n", scoresDiff);
 
 		if (scoresDiff > threshold) {
 			// build B_(k+1) for next iteration
