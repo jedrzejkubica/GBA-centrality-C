@@ -33,7 +33,7 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
 
 	float alphaPowK = 1;
     size_t k = 1;
-    float threshold = 10E-6;
+    float threshold = 10E-4;
     float scoresDiff = 1;
 
     while (scoresDiff > threshold) {
