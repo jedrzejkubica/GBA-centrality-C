@@ -16,10 +16,10 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
         fprintf(stderr, "E: gbaCentrality() called with adjacency matrix and causal genes of different sizes");
         exit(1);
     }
-	unsigned int nbGenes = causal->nbGenes;
+    unsigned int nbGenes = causal->nbGenes;
 
-	// start by copying causal scores, ie scores = alpha**0 * I * casual
-	memcpy(scores->scores, causal->scores, nbGenes * sizeof(float));
+    // start by copying causal scores, ie scores = alpha**0 * I * casual
+    memcpy(scores->scores, causal->scores, nbGenes * sizeof(float));
 
     compactAdjacencyMatrix *interactomeComp = adjacency2compact(A);
     fprintf(stderr, "INFO gbaCentrality.so: calculating B_1\n");
@@ -31,7 +31,7 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
     scoresPrev->nbGenes = nbGenes;
     scoresPrev->scores = mallocOrDie(sizeof(float) * nbGenes, "E: OOM for scoresPrev scores");
 
-	float alphaPowK = 1;
+    float alphaPowK = 1;
     size_t k = 1;
     float threshold = 10E-4;
     float scoresDiff = 1;
@@ -40,8 +40,8 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
         // save scores from B_k-1
         memcpy(scoresPrev->scores, scores->scores, nbGenes * sizeof(float));
 
-		// scores += alpha**k * B_k * causal
-		alphaPowK *= alpha;
+        // scores += alpha**k * B_k * causal
+        alphaPowK *= alpha;
         pathCountsMatrix *interactomePathCounts = countPaths(pathCountsCurrent, interactomeComp);
         rowSums *sums = sumRowElements(interactomePathCounts);  // for row-wise normalization of interactomePathCounts
 
@@ -60,12 +60,12 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
         scoresDiff = calculateScoresDiff(scores, scoresPrev);
         fprintf(stderr, "INFO gbaCentrality.so: scoresDiff = %f\n", scoresDiff);
 
-		if (scoresDiff > threshold) {
-			// build B_(k+1) for next iteration
-			fprintf(stderr, "INFO gbaCentrality.so: calculating B_%ld\n", k+1);
-			pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomePathCounts, interactomeComp);
-			freePathCountsWithPred(pathCountsCurrent);
-			pathCountsCurrent = pathCountsNext;
+        if (scoresDiff > threshold) {
+            // build B_(k+1) for next iteration
+            fprintf(stderr, "INFO gbaCentrality.so: calculating B_%ld\n", k+1);
+            pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomePathCounts, interactomeComp);
+            freePathCountsWithPred(pathCountsCurrent);
+            pathCountsCurrent = pathCountsNext;
             k++;
         }
         freePathCounts(interactomePathCounts);
