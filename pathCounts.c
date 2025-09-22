@@ -20,13 +20,13 @@ pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact) 
     // if i->j is an edge of weight w, then there is a path from i to j
     // with penultimate node i and weight w
     for (size_t offset = 0; offset < sumDegrees; offset++)
-	    pathCounts->data[compact->predecessors[offset] * sumDegrees + offset] = compact->weights[offset];
+        pathCounts->data[compact->predecessors[offset] * sumDegrees + offset] = compact->weights[offset];
 
     return pathCounts;
 }
 
 pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCountsWithPred, pathCountsMatrix *pathCounts,
-											  compactAdjacencyMatrix *compact) {
+                                              compactAdjacencyMatrix *compact) {
     unsigned int nbNodes = compact->nbNodes;
     unsigned int sumDegrees = compact->offsets[nbNodes];
     
@@ -40,10 +40,10 @@ pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCoun
                 // we want to ignore loops so path count is zero if i==j
                 if (i != j) {
                     unsigned int p = compact->predecessors[offset];
-					sum = pathCounts->data[i * nbNodes + p];
-					if (compact->offsetsReverseEdge[offset] < sumDegrees) {
-						sum -= pathCountsWithPred->data[i * sumDegrees + compact->offsetsReverseEdge[offset]];
-					}
+                    sum = pathCounts->data[i * nbNodes + p];
+                    if (compact->offsetsReverseEdge[offset] < sumDegrees) {
+                        sum -= pathCountsWithPred->data[i * sumDegrees + compact->offsetsReverseEdge[offset]];
+                    }
                     sum *= compact->weights[offset];
                 }
                 nextPathCounts->data[i * sumDegrees + offset] = sum;

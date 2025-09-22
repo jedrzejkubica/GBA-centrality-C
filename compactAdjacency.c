@@ -49,24 +49,24 @@ compactAdjacencyMatrix *adjacency2compact(adjacencyMatrix *A) {
     }
 
     compact->offsetsReverseEdge = mallocOrDie(sizeof(size_t) * sumInDegrees,
-											  "E: OOM for offsetsReverseEdge in compact\n");
+                                              "E: OOM for offsetsReverseEdge in compact\n");
     for (unsigned int j = 0; j < A->nbCols; j++) {
-		for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++) {
-			unsigned int p = compact->predecessors[offset];
-			// find offset of j->p edge if it exists
-			size_t offsetReverseEdge = sumInDegrees;
-			if (A->weights[j * A->nbCols + p] > 0) {
-				// look for j among the predecessors of p
-				for (size_t offsetRev = compact->offsets[p]; offsetRev < compact->offsets[p + 1]; offsetRev++) {
-					if (compact->predecessors[offsetRev] == j) {
-						offsetReverseEdge = offsetRev;
-						break;
-					}
-				}
-			}
-			compact->offsetsReverseEdge[offset] = offsetReverseEdge;
-		}
-	}
+        for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++) {
+            unsigned int p = compact->predecessors[offset];
+            // find offset of j->p edge if it exists
+            size_t offsetReverseEdge = sumInDegrees;
+            if (A->weights[j * A->nbCols + p] > 0) {
+                // look for j among the predecessors of p
+                for (size_t offsetRev = compact->offsets[p]; offsetRev < compact->offsets[p + 1]; offsetRev++) {
+                    if (compact->predecessors[offsetRev] == j) {
+                        offsetReverseEdge = offsetRev;
+                        break;
+                    }
+                }
+            }
+            compact->offsetsReverseEdge[offset] = offsetReverseEdge;
+        }
+    }
     return compact;
 }
 

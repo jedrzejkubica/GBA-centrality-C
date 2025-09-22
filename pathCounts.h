@@ -40,7 +40,7 @@ pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact);
     return a pointer to a freshly allocated structure;
 */
 pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCountsWithPred, pathCountsMatrix *pathCounts,
-											  compactAdjacencyMatrix *compact);
+                                              compactAdjacencyMatrix *compact);
 
 void freePathCountsWithPred(pathCountsWithPredMatrix *pathCounts);
 

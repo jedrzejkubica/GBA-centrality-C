@@ -8,7 +8,7 @@ void printScores(geneScores *scores) {
     float *currentScoreP = scores->scores;
     for (unsigned int i = 0; i < scores->nbGenes; i++) {
         printf("%f\n", *currentScoreP);
-		currentScoreP++;
+        currentScoreP++;
     }
 }
 
