@@ -50,7 +50,8 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
                 if (sums->data[i] == 0) {
                     scores->scores[j] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
                 } else {
-                    scores->scores[j] += alphaPowK * interactomePathCounts->data[i * nbGenes + j] / sums->data[i] * causal->scores[i];
+                    scores->scores[j] += alphaPowK *
+                        ((float) interactomePathCounts->data[i * nbGenes + j] / (float) sums->data[i]) * causal->scores[i];
                 }
             }
         }
