@@ -54,7 +54,6 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
             pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomePathCounts, interactomeComp);
             freePathCountsWithPred(pathCountsCurrent);
             pathCountsCurrent = pathCountsNext;
-            k++;
         }
         freePathCounts(interactomePathCounts);
     }
