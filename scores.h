@@ -3,7 +3,7 @@
 
 
 // type used for each geneScores->scores value
-#define SCORETYPE float
+#define SCORETYPE double
 
 /*
     Store one score per gene, each score is a float >=0.

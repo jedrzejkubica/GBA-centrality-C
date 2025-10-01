@@ -8,7 +8,7 @@
   type to store the sum of path weights of a given length, floating point number
   of some precision (eg maybe double)
 */
-#define PATHCOUNTSTYPE float
+#define PATHCOUNTSTYPE double
 
 
 /*
