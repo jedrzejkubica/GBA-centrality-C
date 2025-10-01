@@ -32,8 +32,8 @@ typedef struct {
 
 
 /*
-    check if weights are in [0, 1],
-    remove edges that connect a node to itself,
+    check if weights are in ]0, 1],
+    set weight=0 for edges that connect a node to itself,
     modify N in-place;
     return 0 if OK, 1 if any weight is not in [0, 1],
     otherwise 2 if self-loops were removed
