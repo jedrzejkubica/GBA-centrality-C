@@ -12,14 +12,6 @@
 #pragma GCC visibility push(default)
 
 /*
-  rowSums[i] is the sum of elements in the i-th row of a pathCountsMatrix
-*/
-typedef struct {
-    unsigned int nbNodes;
-    float *data;
-} rowSums;
-
-/*
     Given a network represented by A and some seed nodes (eg known causal genes),
     apply the GBA-centrality algorithm to calculate a score for each node in
     the network.
@@ -28,14 +20,5 @@ typedef struct {
     "scores" must be allocated and will be filled in-place.
 */
 void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScores *scores);
-
-/*
-    this is used to normalize the rows of interactomePathCounts later
-*/
-rowSums *sumRowElements(pathCountsMatrix *pathCounts);
-
-float calculateScoresDiff(geneScores *scores, geneScores *scoresPrev);
-
-void freeRowSums(rowSums *sums);
 
 #endif
