@@ -3,6 +3,14 @@
 
 #include "compactAdjacency.h"
 
+
+/*
+  type to store the sum of path weights of a given length, floating point number
+  of some precision (eg maybe double)
+*/
+#define PATHCOUNTSTYPE float
+
+
 /*
     this structure is dependent on a compactAdjacencyMatrix;
     data is of size offsets[nbNodes]*nbNodes;
@@ -12,7 +20,7 @@
     between nodes i and j whose penultimate node is predecessors[offsets[j] + k]
 */
 typedef struct {
-    float *data;
+    PATHCOUNTSTYPE *data;
 } pathCountsWithPredMatrix;
 
 
@@ -23,7 +31,7 @@ typedef struct {
 */
 typedef struct {
     unsigned int nbCols;
-    float *data;
+    PATHCOUNTSTYPE *data;
 } pathCountsMatrix;
 
 
