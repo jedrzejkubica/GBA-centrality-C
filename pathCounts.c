@@ -12,8 +12,8 @@ pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact) 
     unsigned int nbNodes = compact->nbNodes;
     unsigned int sumDegrees = compact->offsets[nbNodes];
     
-    pathCounts->data = mallocOrDie(sizeof(float) * sumDegrees * nbNodes, "E: OOM for path counts data\n");
-    // set to 0.0 float (all-zeroes is not guaranteed to be 0.0)
+    pathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * sumDegrees * nbNodes, "E: OOM for path counts data\n");
+    // set to 0.0 (all-zeroes is not guaranteed to be 0.0)
     for (size_t i = 0; i < sumDegrees * nbNodes; i++)
         pathCounts->data[i] = 0.0;
 
@@ -31,12 +31,12 @@ pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCoun
     unsigned int sumDegrees = compact->offsets[nbNodes];
     
     pathCountsWithPredMatrix *nextPathCounts = mallocOrDie(sizeof(pathCountsWithPredMatrix), "E: OOM for next path counts\n");
-    nextPathCounts->data = mallocOrDie(sizeof(float) * sumDegrees * nbNodes, "E: OOM for next path counts data\n");
+    nextPathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * sumDegrees * nbNodes, "E: OOM for next path counts data\n");
     
     for (size_t i = 0; i < nbNodes; i++) {
         for (size_t j = 0; j < nbNodes; j++) {
             for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++) {
-                float sum = 0;
+                double sum = 0;
                 // we want to ignore loops so path count is zero if i==j
                 if (i != j) {
                     unsigned int p = compact->predecessors[offset];
@@ -46,7 +46,7 @@ pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCoun
                     }
                     sum *= compact->weights[offset];
                 }
-                nextPathCounts->data[i * sumDegrees + offset] = sum;
+                nextPathCounts->data[i * sumDegrees + offset] = (PATHCOUNTSTYPE)sum;
             }
         }
     }
@@ -66,15 +66,15 @@ pathCountsMatrix *countPaths(pathCountsWithPredMatrix *pathCountsWithPred, compa
     unsigned int sumDegrees = compact->offsets[nbNodes];
     
     pathCounts->nbCols = compact->nbNodes;
-    pathCounts->data = mallocOrDie(sizeof(float) * nbNodes * nbNodes, "E: OOM for path counts data\n");
+    pathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * nbNodes * nbNodes, "E: OOM for path counts data\n");
     
     for (size_t i = 0; i < nbNodes; i++) {
         for (size_t j = 0; j < nbNodes; j++) {
-            float sum = 0;
+            double sum = 0;
             for (size_t k = compact->offsets[j]; k < compact->offsets[j + 1]; k++)
                 sum += pathCountsWithPred->data[i * sumDegrees + k];
 
-            pathCounts->data[i * nbNodes + j] = sum;
+            pathCounts->data[i * nbNodes + j] = (PATHCOUNTSTYPE)sum;
         }
     }
     
