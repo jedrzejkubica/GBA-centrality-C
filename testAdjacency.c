@@ -52,12 +52,12 @@ adjacencyMatrix *asymmetric1and4(void) {
 geneScores *causalGenes(void) {
     geneScores *causal = mallocOrDie(sizeof(geneScores), "E: OOM for causal genes");
     causal->nbGenes = 7;
-    causal->scores = mallocOrDie(7 * sizeof(float), "E: OOM for known causal genes");
+    causal->scores = mallocOrDie(7 * sizeof(SCORETYPE), "E: OOM for known causal genes");
 
     for (size_t i = 0; i < 7; i++)
         causal->scores[i] = 0;
 
-    causal->scores[1] = 1;
+    //causal->scores[1] = 1;
     causal->scores[2] = 1;
 
     return(causal);
@@ -78,7 +78,7 @@ int main(void) {
 
     geneScores *result = mallocOrDie(sizeof(geneScores), "E: OOM for result scores");
     result->nbGenes = 7;
-    result->scores = mallocOrDie(7 * sizeof(float), "E: OOM for result scores");
+    result->scores = mallocOrDie(7 * sizeof(SCORETYPE), "E: OOM for result scores");
 
     gbaCentrality(asymm1to4, causal, 0.5, result);
     printf("scores\n");
