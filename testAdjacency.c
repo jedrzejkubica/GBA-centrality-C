@@ -7,6 +7,7 @@
 
 
 adjacencyMatrix *diamond4(void) {
+    // diamond matrix for testing
     adjacencyMatrix *diamond4 = mallocOrDie(sizeof(adjacencyMatrix), "E: OOM for diamond4");
     diamond4->nbCols = 4;
     diamond4->weights = mallocOrDie(16 * sizeof(float), "E: OOM for diamond4 weights");
