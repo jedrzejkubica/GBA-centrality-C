@@ -9,6 +9,24 @@
 #include "scores.h"
 #include "mem.h"
 
+/*
+  rowSums[i] is the sum of elements in the i-th row of a pathCountsMatrix
+*/
+typedef struct {
+    unsigned int nbNodes;
+    float *data;
+} rowSums;
+
+/*
+  this is used to normalize the rows of interactomePathCounts later
+*/
+rowSums *sumRowElements(pathCountsMatrix *pathCounts);
+
+float calculateScoresDiff(geneScores *scores, geneScores *scoresPrev);
+
+void freeRowSums(rowSums *sums);
+
+
 
 void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScores *scores) {
     // sanity check:
