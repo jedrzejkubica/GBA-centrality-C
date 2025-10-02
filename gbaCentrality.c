@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "gbaCentrality.h"
+#include "network.h"
 #include "compactAdjacency.h"
 #include "pathCounts.h"
 #include "scores.h"
@@ -16,10 +17,10 @@
 float calculateScoresDiff(geneScores *scores, geneScores *scoresPrev);
 
 
-void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScores *scores) {
+void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scores) {
     // sanity check:
-    if (A->nbCols != causal->nbGenes) {
-        fprintf(stderr, "E: gbaCentrality() called with adjacency matrix and causal genes of different sizes");
+    if (N->nbNodes != causal->nbGenes) {
+        fprintf(stderr, "E: gbaCentrality() called with network and causal genes of different sizes");
         exit(1);
     }
     unsigned int nbGenes = causal->nbGenes;
@@ -27,7 +28,7 @@ void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScor
     // start by copying causal scores, ie scores = alpha**0 * I * casual
     memcpy(scores->scores, causal->scores, nbGenes * sizeof(SCORETYPE));
 
-    compactAdjacencyMatrix *interactomeComp = adjacency2compact(A);
+    compactAdjacencyMatrix *interactomeComp = network2compact(N);
     fprintf(stderr, "INFO gbaCentrality(): calculating B_1\n");
 
     pathCountsWithPredMatrix *pathCountsCurrent = buildFirstPathCounts(interactomeComp);
