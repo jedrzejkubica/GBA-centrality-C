@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "pathCounts.h"
-#include "adjacency.h"
 #include "compactAdjacency.h"
 #include "mem.h"
 
