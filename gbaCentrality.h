@@ -1,8 +1,8 @@
 #ifndef _GBACENTRALITY_H_
 #define _GBACENTRALITY_H_
 
+#include "network.h"
 #include "pathCounts.h"
-#include "adjacency.h"
 #include "scores.h"
 
 /*
@@ -19,6 +19,6 @@
     "alpha" is the GBA-centrality parameter, it must be in ]0,1[, typically 0.5 is good.
     "scores" must be allocated and will be filled in-place.
 */
-void gbaCentrality(adjacencyMatrix *A, geneScores *causal, float alpha, geneScores *scores);
+void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scores);
 
 #endif
