@@ -2,10 +2,10 @@
 #define _COMPACTADJACENCY_H_
 
 #include <stddef.h>
-#include "adjacency.h"
+#include "network.h"
 
 /*
-    this module defines the compact representation of adjacency matrix
+    this module defines the compact representation of an adjacency matrix
 */
 
 /*
@@ -34,7 +34,13 @@ typedef struct {
     size_t *offsetsReverseEdge;
 } compactAdjacencyMatrix;
 
-compactAdjacencyMatrix *adjacency2compact(adjacencyMatrix *A);
+/*
+  Allocate and populate a compactAdjacencyMatrix from a network.
+  Pre-conditions: the network's edges must be sorted by increasing
+  dest then increasing source, and must not contain self-interactions;
+  these are true if the network went through checkNetwork()
+ */
+compactAdjacencyMatrix *network2compact(network *N);
 
 void freeCompactAdjacency(compactAdjacencyMatrix *compactA);
 
