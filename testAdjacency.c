@@ -1,60 +1,148 @@
 #include <stdio.h>
 
-#include "adjacency.h"
+#include "network.h"
 #include "scores.h"
 #include "gbaCentrality.h"
 #include "mem.h"
 
 
-adjacencyMatrix *diamond4(void) {
-    // diamond matrix for testing
-    adjacencyMatrix *diamond4 = mallocOrDie(sizeof(adjacencyMatrix), "E: OOM for diamond4");
-    diamond4->nbCols = 4;
-    diamond4->weights = mallocOrDie(16 * sizeof(float), "E: OOM for diamond4 weights");
-    for (size_t i = 0; i < 16; i++)
-        diamond4->weights[i] = 0;
+network *diamond4(void) {
+    // diamond network for testing
+    network *diamond4 = mallocOrDie(sizeof(network), "E: OOM for diamond4");
+    diamond4->nbNodes = 4;
+    diamond4->nbEdges = 9;
+    diamond4->edges = mallocOrDie(diamond4->nbEdges * sizeof(edge), "E: OOM for diamond4 edges");
+    edge *edgeP = diamond4->edges;
 
-    diamond4->weights[1] = 0.2;
-    diamond4->weights[2] = 0.5;
-    diamond4->weights[4] = 0.4;
-    diamond4->weights[7] = 1;
-    diamond4->weights[8] = 1;
-    diamond4->weights[11] = 1;
-    diamond4->weights[13] = 1;
-    diamond4->weights[14] = 1;
-    // add a self-interaction 4->4 for testing
-    diamond4->weights[15] = 1;
+    edgeP->source = 0;
+    edgeP->dest = 1;
+    edgeP->weight = 0.2;
+    edgeP++;
+    edgeP->source = 0;
+    edgeP->dest = 2;
+    edgeP->weight = 0.5;
+    edgeP++;
+
+    edgeP->source = 1;
+    edgeP->dest = 0;
+    edgeP->weight = 0.4;
+    edgeP++;
+    edgeP->source = 1;
+    edgeP->dest = 3;
+    edgeP->weight = 1;
+    edgeP++;
+
+    edgeP->source = 2;
+    edgeP->dest = 0;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 2;
+    edgeP->dest = 3;
+    edgeP->weight = 1;
+    edgeP++;
+
+    edgeP->source = 3;
+    edgeP->dest = 1;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 3;
+    edgeP->dest = 2;
+    edgeP->weight = 1;
+    edgeP++;
+    
+    // add a self-interaction 3->3 for testing
+    edgeP->source = 3;
+    edgeP->dest = 3;
+    edgeP->weight = 1;
     return(diamond4);
 }
 
-adjacencyMatrix *asymmetric1and4(void) {
-    adjacencyMatrix *asymmetric1and4 = mallocOrDie(sizeof(adjacencyMatrix), "E: OOM for asymmetric1and4");
-    asymmetric1and4->nbCols = 7;
-    asymmetric1and4->weights = mallocOrDie(7 * 7 * sizeof(float), "E: OOM for asymmetric1and4 weights");
-    for (size_t i = 0; i < 49; i++)
-        asymmetric1and4->weights[i] = 0;
+geneScores *causalGenesDiam4(void) {
+    geneScores *causal = mallocOrDie(sizeof(geneScores), "E: OOM for causal genes");
+    causal->nbGenes = 4;
+    causal->scores = mallocOrDie(causal->nbGenes * sizeof(SCORETYPE), "E: OOM for causal genes");
 
-    asymmetric1and4->weights[1] = 1.0;
-    asymmetric1and4->weights[7] = 1.0;
-    asymmetric1and4->weights[9] = 1.0;
-    asymmetric1and4->weights[15] = 1.0;
-    asymmetric1and4->weights[17] = 1.0;
-    asymmetric1and4->weights[18] = 1.0;
-    asymmetric1and4->weights[19] = 1.0;
-    asymmetric1and4->weights[20] = 1.0;
-    asymmetric1and4->weights[23] = 1.0;
-    asymmetric1and4->weights[30] = 1.0;
-    asymmetric1and4->weights[37] = 1.0;
-    asymmetric1and4->weights[44] = 1.0;
-    return(asymmetric1and4);
+    for (size_t i = 0; i < causal->nbGenes; i++)
+        causal->scores[i] = 0;
+
+    //causal->scores[1] = 1;
+    causal->scores[2] = 1;
+
+    return(causal);
 }
 
-geneScores *causalGenes(void) {
+
+/*
+  7 nodes: node 1 is connected to nodes 0 and 2, node 2 is a hub connected to 1 and 3-6,
+  and we create this as an undirected unweighted network
+*/
+network *asymmetric(void) {
+    network *asym = mallocOrDie(sizeof(network), "E: OOM for asym");
+    asym->nbNodes = 7;
+    asym->nbEdges = 12;
+    asym->edges = mallocOrDie(asym->nbEdges * sizeof(edge), "E: OOM for asym edges");
+    edge *edgeP = asym->edges;
+
+    edgeP->source = 0;
+    edgeP->dest = 1;
+    edgeP->weight = 1;
+    edgeP++;
+    
+    edgeP->source = 1;
+    edgeP->dest = 0;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 1;
+    edgeP->dest = 2;
+    edgeP->weight = 1;
+    edgeP++;
+
+    edgeP->source = 2;
+    edgeP->dest = 1;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 2;
+    edgeP->dest = 3;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 2;
+    edgeP->dest = 4;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 2;
+    edgeP->dest = 5;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 2;
+    edgeP->dest = 6;
+    edgeP->weight = 1;
+    edgeP++;
+
+    edgeP->source = 3;
+    edgeP->dest = 2;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 4;
+    edgeP->dest = 2;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 5;
+    edgeP->dest = 2;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 6;
+    edgeP->dest = 2;
+    edgeP->weight = 1;
+    
+    return(asym);
+}
+
+geneScores *causalGenesAsym(void) {
     geneScores *causal = mallocOrDie(sizeof(geneScores), "E: OOM for causal genes");
     causal->nbGenes = 7;
-    causal->scores = mallocOrDie(7 * sizeof(SCORETYPE), "E: OOM for known causal genes");
+    causal->scores = mallocOrDie(causal->nbGenes * sizeof(SCORETYPE), "E: OOM for causal genes");
 
-    for (size_t i = 0; i < 7; i++)
+    for (size_t i = 0; i < causal->nbGenes; i++)
         causal->scores[i] = 0;
 
     //causal->scores[1] = 1;
@@ -64,28 +152,49 @@ geneScores *causalGenes(void) {
 }
 
 int main(void) {
-    /*
-    adjacencyMatrix *diam4 = diamond4();
-    printf("diam4 with its self-loop\n");
-    printAdjacency(diam4);
-    */
-    adjacencyMatrix *asymm1to4 = asymmetric1and4();
-    printAdjacency(asymm1to4);
+    {
+        // dimaond4 network
+        network *diam4 = diamond4();
+        printf("diam4 with its self-loop\n");
+        printNetwork(diam4);
+    
+        geneScores *causal = causalGenesDiam4();
+        printf("Diam4 causal genes:\n");
+        printScores(causal);
 
-    geneScores *causal = causalGenes();
-    printf("causal genes\n");
-    printScores(causal);
+        geneScores *result = mallocOrDie(sizeof(geneScores), "E: OOM for result scores");
+        result->nbGenes = causal->nbGenes;
+        result->scores = mallocOrDie(causal->nbGenes * sizeof(SCORETYPE), "E: OOM for result scores");
 
-    geneScores *result = mallocOrDie(sizeof(geneScores), "E: OOM for result scores");
-    result->nbGenes = 7;
-    result->scores = mallocOrDie(7 * sizeof(SCORETYPE), "E: OOM for result scores");
+        gbaCentrality(diam4, causal, 0.5, result);
+        printf("Diam4 scores\n");
+        printScores(result);
+        freeNetwork(diam4);
+        freeScores(causal);
+        freeScores(result);
+    }
 
-    gbaCentrality(asymm1to4, causal, 0.5, result);
-    printf("scores\n");
-    printScores(result);
-    freeAdjacency(asymm1to4);
-    freeScores(result);
-    freeScores(causal);
+    {
+        // asymmetric network
+        network *asym = asymmetric();
+        printf("asymmetric with one hub\n");
+        printNetwork(asym);
+    
+        geneScores *causal = causalGenesAsym();
+        printf("Asym causal genes:\n");
+        printScores(causal);
+
+        geneScores *result = mallocOrDie(sizeof(geneScores), "E: OOM for result scores");
+        result->nbGenes = causal->nbGenes;
+        result->scores = mallocOrDie(causal->nbGenes * sizeof(SCORETYPE), "E: OOM for result scores");
+
+        gbaCentrality(asym, causal, 0.5, result);
+        printf("Asym scores\n");
+        printScores(result);
+        freeNetwork(asym);
+        freeScores(causal);
+        freeScores(result);
+    }
 
     return(0);
 }
