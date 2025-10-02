@@ -57,5 +57,6 @@ void printNetwork(network *N) {
     edge *edgeP = N->edges;
     for (size_t i = 0; i < N->nbEdges; i++) {
         printf("%u -> %u w=%0.2f\n", edgeP->source, edgeP->dest, edgeP->weight);
+        edgeP++;
     }
 }
