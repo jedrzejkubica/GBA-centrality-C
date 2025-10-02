@@ -34,9 +34,10 @@ typedef struct {
 /*
     check if weights are in ]0, 1],
     set weight=0 for edges that connect a node to itself,
-    modify N in-place;
-    return 0 if OK, 1 if any weight is not in [0, 1],
-    otherwise 2 if self-loops were removed
+    sort edges by increasing dest then increasing source,
+    modifying N in-place;
+    return -1 if any weight is not in [0, 1], otherwise the number
+    of self-interactions that were set to zero-weight (0 if there were none)
 */
 int checkNetwork(network *N);
 
