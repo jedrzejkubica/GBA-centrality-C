@@ -47,11 +47,26 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     memcpy(scores->scores, causal->scores, nbGenes * sizeof(SCORETYPE));
 
     compactAdjacencyMatrix *interactomeComp = network2compact(N);
+
+    // debug logs
+    int offsetZmynFirst = interactomeComp->offsets[13296];
+    int offsetZmynLast = interactomeComp->offsets[13297] - 1;
+    fprintf(stderr, "ZMYND12 offsets: %i - %i\n", offsetZmynFirst, offsetZmynLast);
+
+    
     fprintf(stderr, "INFO gbaCentrality(): calculating B_1\n");
 
     pathCountsWithPredMatrix *pathCountsCurrent = buildFirstPathCounts(interactomeComp);
     pathCountsWithPredMatrix *pathCountsNext = NULL;
 
+    // debug again
+    fprintf(stderr, "firstPathCounts from ZMYND12:\n");
+    for (size_t j=0; j < interactomeComp->offsets[nbGenes]; j++) {
+        if (pathCountsCurrent->data[13296 * interactomeComp->offsets[nbGenes] + j] != 0)
+            fprintf(stderr, "%.0f\t", pathCountsCurrent->data[13296 * interactomeComp->offsets[nbGenes] + j]);
+    }
+    fprintf(stderr, "\n");
+    
     geneScores *scoresPrev = mallocOrDie(sizeof(geneScores), "ERROR: OOM for scoresPrev\n");
     scoresPrev->nbGenes = nbGenes;
     scoresPrev->scores = mallocOrDie(sizeof(SCORETYPE) * nbGenes, "ERROR: OOM for scoresPrev scores");
@@ -85,13 +100,13 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
                 }
                 scores->scores[j] += alphaPowK * scoreSum / colSum;
 
-                // debug: ONECUT3==84
-                if (j==84) {
-                    fprintf(stderr, "ONECUT3 score with k==%lu : %f\n", k-1, scoresPrev->scores[j]);
-                    fprintf(stderr, "number of paths of length %lu ending at ONECUT3: %f\n", k, colSum);
-                    fprintf(stderr, "number of paths of length %lu from ZMYND12 to ONECUT3: %f\n", k, scoreSum);
-                    fprintf(stderr, "updating ONECUT3 score for k==%lu by %f\n", k, alphaPowK * scoreSum / colSum);
-                    fprintf(stderr, "ONECUT3 score is now (k==%lu) : %f\n", k, scores->scores[j]);
+                // debug: TTC29=13606
+                if (j==13606) {
+                    fprintf(stderr, "TTC29 score with k==%lu : %f\n", k-1, scoresPrev->scores[j]);
+                    fprintf(stderr, "number of paths of length %lu ending at TTC29: %f\n", k, colSum);
+                    fprintf(stderr, "number of paths of length %lu from ZMYND12 to TTC29: %f\n", k, scoreSum);
+                    fprintf(stderr, "updating TTC29 score for k==%lu by %f\n", k, alphaPowK * scoreSum / colSum);
+                    fprintf(stderr, "TTC29 score is now (k==%lu) : %f\n", k, scores->scores[j]);
                 }
             }
         }
