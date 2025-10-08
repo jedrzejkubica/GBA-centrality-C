@@ -51,14 +51,27 @@ pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCoun
     pathCountsWithPredMatrix *nextPathCounts = mallocOrDie(sizeof(pathCountsWithPredMatrix), "E: OOM for next path counts\n");
     nextPathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * sumDegrees * nbNodes, "E: OOM for next path counts data\n");
     
+    /*
+      Ideally we want to count paths, ie walks that don't contain loops. But this is hard
+      to code efficiently...
+      We therefore have an approximate solution, that counts all walks except those that:
+      - contain a loop (of any length) back to the starting node (with i!=j below);
+      - contain a loop of length 2, ie with 2 steps back-and-forth, anywhere in
+        the walk (using offsetReverseEdge below).
+      Therefore we are still counting walks that contain an inner loop of length >= 3  (eg
+      i->j->k->m->j will be counted as a length 4 path between i and j)...
+      But our approximate solution is efficient, and should largely reduce the
+      "hub" issue, ie the explosion of number of walks when going through a hub.
+    */
     for (size_t i = 0; i < nbNodes; i++) {
         for (size_t j = 0; j < nbNodes; j++) {
             for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++) {
                 double sum = 0;
-                // we want to ignore loops so path count is zero if i==j
+                // ignore loops back to starting node => path count stays zero if i==j
                 if (i != j) {
                     unsigned int p = compact->predecessors[offset];
                     sum = pathCounts->data[i * nbNodes + p];
+                    // ignore walks whose last step is backtracking on the previous step
                     if (compact->offsetsReverseEdge[offset] < sumDegrees) {
                         sum -= pathCountsWithPred->data[i * sumDegrees + compact->offsetsReverseEdge[offset]];
                     }
@@ -83,7 +96,7 @@ pathCountsMatrix *countPaths(pathCountsWithPredMatrix *pathCountsWithPred, compa
     unsigned int nbNodes = compact->nbNodes;
     unsigned int sumDegrees = compact->offsets[nbNodes];
     
-    pathCounts->nbCols = compact->nbNodes;
+    pathCounts->nbCols = nbNodes;
     pathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * nbNodes * nbNodes, "E: OOM for path counts data\n");
     
     for (size_t i = 0; i < nbNodes; i++) {
