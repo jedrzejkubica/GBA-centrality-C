@@ -38,7 +38,7 @@ float calculateScoresDiff(geneScores *scores, geneScores *scoresPrev);
 void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scores) {
     // sanity check:
     if (N->nbNodes != causal->nbGenes) {
-        fprintf(stderr, "E: gbaCentrality() called with network and causal genes of different sizes");
+        fprintf(stderr, "ERROR: gbaCentrality() called with network and causal genes of different sizes");
         exit(1);
     }
     unsigned int nbGenes = causal->nbGenes;
@@ -52,9 +52,9 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     pathCountsWithPredMatrix *pathCountsCurrent = buildFirstPathCounts(interactomeComp);
     pathCountsWithPredMatrix *pathCountsNext = NULL;
 
-    geneScores *scoresPrev = mallocOrDie(sizeof(geneScores), "E: OOM for scoresPrev\n");
+    geneScores *scoresPrev = mallocOrDie(sizeof(geneScores), "ERROR: OOM for scoresPrev\n");
     scoresPrev->nbGenes = nbGenes;
-    scoresPrev->scores = mallocOrDie(sizeof(SCORETYPE) * nbGenes, "E: OOM for scoresPrev scores");
+    scoresPrev->scores = mallocOrDie(sizeof(SCORETYPE) * nbGenes, "ERROR: OOM for scoresPrev scores");
 
     float alphaPowK = 1;
     size_t k = 1;
@@ -89,11 +89,11 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
         
         // calculate the difference between scores for B_k-1 and B_k
         scoresDiff = calculateScoresDiff(scores, scoresPrev);
-        fprintf(stderr, "INFO gbaCentrality.so: scoresDiff = %f\n", scoresDiff);
+        fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
 
         if (scoresDiff > threshold) {
             // build B_(k+1) for next iteration
-            fprintf(stderr, "INFO gbaCentrality.so: calculating B_%ld\n", k+1);
+            fprintf(stderr, "INFO gbaCentrality(): calculating B_%ld\n", k+1);
             pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomePathCounts, interactomeComp);
             freePathCountsWithPred(pathCountsCurrent);
             pathCountsCurrent = pathCountsNext;
