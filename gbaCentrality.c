@@ -67,31 +67,31 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
         // save scores from B_k-1
         memcpy(scoresPrev->scores, scores->scores, nbGenes * sizeof(SCORETYPE));
 
-        // scores += alpha**k * B_k * causal
+        // scores += alpha**k * causal * B_k
         alphaPowK *= alpha;
         pathCountsMatrix *interactomePathCounts = countPaths(pathCountsCurrent, interactomeComp);
 
-        for (size_t i = 0; i < nbGenes; i++) {
-            // calculate sum of row i
-            double rowSum = 0;
-            for (size_t j = 0; j < nbGenes; j++) {
-                rowSum += interactomePathCounts->data[i * nbGenes + j];
+        for (size_t j = 0; j < nbGenes; j++) {
+            // calculate sum of column j
+            double colSum = 0;
+            for (size_t i = 0; i < nbGenes; i++) {
+                colSum += interactomePathCounts->data[i * nbGenes + j];
             }
             // updates scores
-            if (rowSum != 0) {
+            if (colSum != 0) {
                 double scoreSum = 0;
-                for (size_t j = 0; j < nbGenes; j++) {
-                    scoreSum += interactomePathCounts->data[i * nbGenes + j] * causal->scores[j];
+                for (size_t i = 0; i < nbGenes; i++) {
+                    scoreSum += interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
                 }
-                scores->scores[i] += alphaPowK * scoreSum / rowSum;
+                scores->scores[j] += alphaPowK * scoreSum / colSum;
 
                 // debug: ONECUT3==84
-                if (i==84) {
-                    fprintf(stderr, "ONECUT3 score with k==%lu : %f\n", k-1, scoresPrev->scores[i]);
-                    fprintf(stderr, "number of paths of length %lu starting at ONECUT3: %f\n", k, rowSum);
-                    fprintf(stderr, "number of paths of length %lu from ONECUT3 to ZMYND12: %f\n", k, scoreSum);
-                    fprintf(stderr, "updating ONECUT3 score for k==%lu by %f\n", k, alphaPowK * scoreSum / rowSum);
-                    fprintf(stderr, "ONECUT3 score with is now (k==%lu) : %f\n", k, scores->scores[i]);
+                if (j==84) {
+                    fprintf(stderr, "ONECUT3 score with k==%lu : %f\n", k-1, scoresPrev->scores[j]);
+                    fprintf(stderr, "number of paths of length %lu ending at ONECUT3: %f\n", k, colSum);
+                    fprintf(stderr, "number of paths of length %lu from ZMYND12 to ONECUT3: %f\n", k, scoreSum);
+                    fprintf(stderr, "updating ONECUT3 score for k==%lu by %f\n", k, alphaPowK * scoreSum / colSum);
+                    fprintf(stderr, "ONECUT3 score is now (k==%lu) : %f\n", k, scores->scores[j]);
                 }
             }
         }
