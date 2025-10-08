@@ -84,9 +84,18 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
                     scoreSum += interactomePathCounts->data[i * nbGenes + j] * causal->scores[j];
                 }
                 scores->scores[i] += alphaPowK * scoreSum / rowSum;
+
+                // debug: ONECUT3==84
+                if (i==84) {
+                    fprintf(stderr, "ONECUT3 score with k==%lu : %f\n", k-1, scoresPrev->scores[i]);
+                    fprintf(stderr, "number of paths of length %lu starting at ONECUT3: %f\n", k, rowSum);
+                    fprintf(stderr, "number of paths of length %lu from ONECUT3 to ZMYND12: %f\n", k, scoreSum);
+                    fprintf(stderr, "updating ONECUT3 score for k==%lu by %f\n", k, alphaPowK * scoreSum / rowSum);
+                    fprintf(stderr, "ONECUT3 score with is now (k==%lu) : %f\n", k, scores->scores[i]);
+                }
             }
         }
-        
+
         // calculate the difference between scores for B_k-1 and B_k
         scoresDiff = calculateScoresDiff(scores, scoresPrev);
         fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
