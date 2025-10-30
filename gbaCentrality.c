@@ -32,7 +32,7 @@
 /*
   Return sqrt[sum of square of (diff between same-index elements)] 
 */
-float calculateScoresDiff(geneScores *scores, geneScores *scoresPrev);
+SCORETYPE calculateScoresDiff(geneScores *scores, geneScores *scoresPrev);
 
 
 void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scores) {
@@ -61,8 +61,8 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     size_t k = 1;
     
     // for convergence test
-    float threshold = 10E-4;
-    float scoresDiff = 1;
+    SCORETYPE threshold = 10E-4;
+    SCORETYPE scoresDiff = 1;
 
     while (scoresDiff > threshold) {
         // save scores from B_k-1
@@ -107,13 +107,13 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     freeCompactAdjacency(interactomeComp);
 }
 
-float calculateScoresDiff(geneScores *scores, geneScores *scoresPrev) {
-    double scoresDiff = 0;
+SCORETYPE calculateScoresDiff(geneScores *scores, geneScores *scoresPrev) {
+    SCORETYPE scoresDiff = 0;
     for (size_t i = 0; i < scores->nbGenes; i++) {
-        float diff = scores->scores[i] - scoresPrev->scores[i];
+        SCORETYPE diff = scores->scores[i] - scoresPrev->scores[i];
         scoresDiff += diff * diff;
     }
     scoresDiff = sqrt(scoresDiff);  // L2 norm
 
-    return((float)scoresDiff);
+    return(scoresDiff);
 }
