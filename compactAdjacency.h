@@ -43,11 +43,15 @@
     for any i < sumOfDegrees offsetsReverseEdge[i] is the offset corresponding to 
     edge j->p (assuming i is the offset of edge p->j) if j->p exists, sumOfDegrees
     otherwise
+
+    We must use size_t for offsets, since one pathCountsWithpredMatrix can have
+    more elements than UINT_MAX. Actually we will use size_t everywhere, the
+    predecessors is not large anyways.
 */
 typedef struct {
-    unsigned int nbNodes;
+    size_t nbNodes;
     size_t *offsets;
-    unsigned int *predecessors;
+    size_t *predecessors;
     float *weights;
     size_t *offsetsReverseEdge;
 } compactAdjacencyMatrix;

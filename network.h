@@ -43,8 +43,8 @@ typedef struct {
   with the same weight
  */
 typedef struct {
-    unsigned int nbNodes;
-    unsigned int nbEdges;
+    unsigned long int nbNodes;
+    unsigned long int nbEdges;
     edge *edges;
 } network;
 
@@ -57,7 +57,7 @@ typedef struct {
     return -1 if any weight is not in [0, 1], otherwise the number
     of self-interactions that were set to zero-weight (0 if there were none)
 */
-int checkNetwork(network *N);
+long int checkNetwork(network *N);
 
 void freeNetwork(network *N);
 

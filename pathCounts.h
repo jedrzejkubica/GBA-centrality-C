@@ -19,6 +19,7 @@
 #ifndef _PATHCOUNTS_H_
 #define _PATHCOUNTS_H_
 
+#include <stddef.h>
 #include "compactAdjacency.h"
 
 
@@ -48,7 +49,7 @@ typedef struct {
     of a given length from node i to j
 */
 typedef struct {
-    unsigned int nbCols;
+    size_t nbCols;
     PATHCOUNTSTYPE *data;
 } pathCountsMatrix;
 

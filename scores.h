@@ -19,16 +19,16 @@
 #ifndef _SCORES_H_
 #define _SCORES_H_
 
+#include <stddef.h>
 
 // type used for each geneScores->scores value
 #define SCORETYPE double
 
 /*
-    Store one score per gene, each score is a float >=0.
-    scores MUST be large enough to store nbGenes floats.
+    Store one score per gene, each score is a SCORETYPE >=0.
  */
 typedef struct {
-    unsigned int nbGenes;
+    size_t nbGenes;
     SCORETYPE *scores;
 } geneScores;
 

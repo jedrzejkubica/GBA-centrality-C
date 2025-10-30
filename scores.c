@@ -24,7 +24,7 @@
 
 void printScores(geneScores *scores) {
     SCORETYPE *currentScoreP = scores->scores;
-    for (unsigned int i = 0; i < scores->nbGenes; i++) {
+    for (size_t i = 0; i < scores->nbGenes; i++) {
         printf("%f\n", *currentScoreP);
         currentScoreP++;
     }

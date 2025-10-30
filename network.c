@@ -43,8 +43,8 @@ int compEdges(const void *elem1, const void *elem2) {
     return(retVal);
 }
 
-int checkNetwork(network *N) {
-    int nbSelfLoops = 0;
+long int checkNetwork(network *N) {
+    long int nbSelfLoops = 0;
 
     edge *edgeP = N->edges;
     for (size_t i = 0; i < N->nbEdges; i++) {
@@ -71,7 +71,7 @@ void freeNetwork(network *N) {
 }
 
 void printNetwork(network *N) {
-    printf("Network has %u nodes and %u edges:\n", N->nbNodes, N->nbEdges);
+    printf("Network has %lu nodes and %lu edges:\n", N->nbNodes, N->nbEdges);
     edge *edgeP = N->edges;
     for (size_t i = 0; i < N->nbEdges; i++) {
         printf("%u -> %u w=%0.2f\n", edgeP->source, edgeP->dest, edgeP->weight);

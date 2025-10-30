@@ -26,28 +26,28 @@
 
 
 compactAdjacencyMatrix *network2compact(network *N) {
-    int nbSelfLoops = checkNetwork(N);
+    long int nbSelfLoops = checkNetwork(N);
     if (nbSelfLoops == -1) {
         fprintf(stderr, "E: weights are not in ]0, 1], please fix the network\n");
         exit(1);
     } else if (nbSelfLoops > 0) {
-        fprintf(stderr, "WARNING: your network has %i self-loops, they have been removed\n", nbSelfLoops);
+        fprintf(stderr, "WARNING: your network has %li self-loops, they have been removed\n", nbSelfLoops);
     }
 
-    fprintf(stderr, "network2compact: %u edges between %u nodes\n", N->nbEdges, N->nbNodes);
+    fprintf(stderr, "network2compact: %lu edges between %lu nodes\n", N->nbEdges, N->nbNodes);
     
     compactAdjacencyMatrix *compact = mallocOrDie(sizeof(compactAdjacencyMatrix), "E: OOM for compact\n");
 
     compact->nbNodes = N->nbNodes;
     compact->offsets = mallocOrDie(sizeof(size_t) * (N->nbNodes + 1), "E: OOM for offsets\n");
-    compact->predecessors = mallocOrDie(sizeof(unsigned int) * (N->nbEdges - nbSelfLoops),
+    compact->predecessors = mallocOrDie(sizeof(size_t) * (N->nbEdges - nbSelfLoops),
                                         "E: OOM for predecessors\n");
     compact->weights = mallocOrDie(sizeof(float) * (N->nbEdges - nbSelfLoops), "E: OOM for weights\n");
     compact->offsetsReverseEdge = mallocOrDie(sizeof(size_t) * (N->nbEdges - nbSelfLoops),
                                               "E: OOM for offsetsReverseEdge\n");
 
     size_t sumInDegrees = 0;
-    unsigned int currentDest = 0;
+    size_t currentDest = 0;
     edge *currentEdgeP = N->edges;
     compact->offsets[0] = 0;
 
@@ -73,9 +73,9 @@ compactAdjacencyMatrix *network2compact(network *N) {
     assert(sumInDegrees + nbSelfLoops == N->nbEdges);
 
     // fill offsetsReverseEdge
-    for (unsigned int j = 0; j < N->nbNodes; j++) {
+    for (size_t j = 0; j < N->nbNodes; j++) {
         for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++) {
-            unsigned int p = compact->predecessors[offset];
+            size_t p = compact->predecessors[offset];
             // find offset of j->p edge if it exists, ie look for j among the predecessors of p
             size_t offsetReverseEdge = sumInDegrees;
             for (size_t offsetRev = compact->offsets[p]; offsetRev < compact->offsets[p + 1]; offsetRev++) {

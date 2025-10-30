@@ -27,8 +27,8 @@
 pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact) {
     pathCountsWithPredMatrix *pathCounts = mallocOrDie(sizeof(pathCountsWithPredMatrix), "E: OOM for path counts\n");
     
-    unsigned int nbNodes = compact->nbNodes;
-    unsigned int sumDegrees = compact->offsets[nbNodes];
+    size_t nbNodes = compact->nbNodes;
+    size_t sumDegrees = compact->offsets[nbNodes];
     
     pathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * sumDegrees * nbNodes, "E: OOM for path counts data\n");
     // set to 0.0 (all-zeroes is not guaranteed to be 0.0)
@@ -45,8 +45,8 @@ pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact) 
 
 pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCountsWithPred, pathCountsMatrix *pathCounts,
                                               compactAdjacencyMatrix *compact) {
-    unsigned int nbNodes = compact->nbNodes;
-    unsigned int sumDegrees = compact->offsets[nbNodes];
+    size_t nbNodes = compact->nbNodes;
+    size_t sumDegrees = compact->offsets[nbNodes];
     
     pathCountsWithPredMatrix *nextPathCounts = mallocOrDie(sizeof(pathCountsWithPredMatrix), "E: OOM for next path counts\n");
     nextPathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * sumDegrees * nbNodes, "E: OOM for next path counts data\n");
@@ -69,7 +69,7 @@ pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCoun
                 double sum = 0;
                 // ignore loops back to starting node => path count stays zero if i==j
                 if (i != j) {
-                    unsigned int p = compact->predecessors[offset];
+                    size_t p = compact->predecessors[offset];
                     sum = pathCounts->data[i * nbNodes + p];
                     // ignore walks whose last step is backtracking on the previous step
                     if (compact->offsetsReverseEdge[offset] < sumDegrees) {
@@ -93,8 +93,8 @@ void freePathCountsWithPred(pathCountsWithPredMatrix *pathCounts) {
 pathCountsMatrix *countPaths(pathCountsWithPredMatrix *pathCountsWithPred, compactAdjacencyMatrix *compact) {
     pathCountsMatrix *pathCounts = mallocOrDie(sizeof(pathCountsMatrix), "E: OOM for path counts matrix\n");
     
-    unsigned int nbNodes = compact->nbNodes;
-    unsigned int sumDegrees = compact->offsets[nbNodes];
+    size_t nbNodes = compact->nbNodes;
+    size_t sumDegrees = compact->offsets[nbNodes];
     
     pathCounts->nbCols = nbNodes;
     pathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * nbNodes * nbNodes, "E: OOM for path counts data\n");
