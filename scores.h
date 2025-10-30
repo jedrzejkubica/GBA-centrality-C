@@ -22,7 +22,7 @@
 #include <stddef.h>
 
 // type used for each geneScores->scores value
-#define SCORETYPE double
+#define SCORETYPE float
 
 /*
     Store one score per gene, each score is a SCORETYPE >=0.
