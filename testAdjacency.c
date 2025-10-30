@@ -75,6 +75,7 @@ network *diamond4(void) {
     return(diamond4);
 }
 
+
 geneScores *causalGenesDiam4(void) {
     geneScores *causal = mallocOrDie(sizeof(geneScores), "E: OOM for causal genes");
     causal->nbGenes = 4;
@@ -85,6 +86,81 @@ geneScores *causalGenesDiam4(void) {
 
     //causal->scores[1] = 1;
     causal->scores[2] = 1;
+
+    return(causal);
+}
+
+
+network *diamond6(void) {
+    // diamond network for testing
+    // add node 1 without edges and node 2 with only a self-loop
+    network *diamond6 = mallocOrDie(sizeof(network), "E: OOM for diamond6");
+    diamond6->nbNodes = 6;
+    diamond6->nbEdges = 10;
+    diamond6->edges = mallocOrDie(diamond6->nbEdges * sizeof(edge), "E: OOM for diamond6 edges");
+    edge *edgeP = diamond6->edges;
+
+    edgeP->source = 0;
+    edgeP->dest = 3;
+    edgeP->weight = 0.2;
+    edgeP++;
+    edgeP->source = 0;
+    edgeP->dest = 4;
+    edgeP->weight = 0.5;
+    edgeP++;
+
+    edgeP->source = 3;
+    edgeP->dest = 0;
+    edgeP->weight = 0.4;
+    edgeP++;
+    edgeP->source = 3;
+    edgeP->dest = 5;
+    edgeP->weight = 1;
+    edgeP++;
+
+    edgeP->source = 4;
+    edgeP->dest = 0;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 4;
+    edgeP->dest = 5;
+    edgeP->weight = 1;
+    edgeP++;
+
+    edgeP->source = 5;
+    edgeP->dest = 3;
+    edgeP->weight = 1;
+    edgeP++;
+    edgeP->source = 5;
+    edgeP->dest = 4;
+    edgeP->weight = 1;
+    edgeP++;
+    
+    // add a self-interaction 3->3 for testing
+    edgeP->source = 3;
+    edgeP->dest = 3;
+    edgeP->weight = 1;
+    edgeP++;
+
+    // add a self-interaction 2->2 for testing
+    edgeP->source = 2;
+    edgeP->dest = 2;
+    edgeP->weight = 1;
+
+    return(diamond6);
+}
+
+
+geneScores *causalGenesDiam6(void) {
+    geneScores *causal = mallocOrDie(sizeof(geneScores), "E: OOM for causal genes");
+    causal->nbGenes = 6;
+    causal->scores = mallocOrDie(causal->nbGenes * sizeof(SCORETYPE), "E: OOM for causal genes");
+
+    for (size_t i = 0; i < causal->nbGenes; i++)
+        causal->scores[i] = 0;
+
+    //causal->scores[1] = 1;
+    causal->scores[4] = 1;
 
     return(causal);
 }
@@ -188,6 +264,28 @@ int main(void) {
         printf("Diam4 scores\n");
         printScores(result);
         freeNetwork(diam4);
+        freeScores(causal);
+        freeScores(result);
+    }
+
+        {
+        // dimaond6 network
+        network *diam6 = diamond6();
+        printf("diam6 with its self-loop\n");
+        printNetwork(diam6);
+    
+        geneScores *causal = causalGenesDiam6();
+        printf("Diam6 causal genes:\n");
+        printScores(causal);
+
+        geneScores *result = mallocOrDie(sizeof(geneScores), "E: OOM for result scores");
+        result->nbGenes = causal->nbGenes;
+        result->scores = mallocOrDie(causal->nbGenes * sizeof(SCORETYPE), "E: OOM for result scores");
+
+        gbaCentrality(diam6, causal, 0.5, result);
+        printf("diam6 scores\n");
+        printScores(result);
+        freeNetwork(diam6);
         freeScores(causal);
         freeScores(result);
     }
