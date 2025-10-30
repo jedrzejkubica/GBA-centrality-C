@@ -27,16 +27,17 @@
   type to store the sum of path weights of a given length, floating point number
   of some precision (eg maybe double)
 */
-#define PATHCOUNTSTYPE double
+#define PATHCOUNTSTYPE float
 
 
 /*
     this structure is dependent on a compactAdjacencyMatrix;
     data is of size offsets[nbNodes]*nbNodes;
-    for any k in [0, deg(j)-1]:
+    for any k in [0, inDeg(j)-1]:
     data[i*offsets[nbNodes] + offsets[j] + k]
     is the number of paths (or the sum of path weights for a weighted network)
-    between nodes i and j whose penultimate node is predecessors[offsets[j] + k]
+    between nodes i and j whose penultimate node is the k'th predecessor 
+    of node j, ie. predecessors[offsets[j] + k]
 */
 typedef struct {
     PATHCOUNTSTYPE *data;
