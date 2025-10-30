@@ -25,7 +25,7 @@
 void printScores(geneScores *scores) {
     SCORETYPE *currentScoreP = scores->scores;
     for (size_t i = 0; i < scores->nbGenes; i++) {
-        printf("%f\n", *currentScoreP);
+        printf("%.3g\n", *currentScoreP);  // g is shorter scientific or decimal
         currentScoreP++;
     }
 }
