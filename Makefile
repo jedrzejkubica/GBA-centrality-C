@@ -9,7 +9,7 @@ DEPDIR = Deps
 OBJS = $(patsubst %.h,$(OBJDIR)/%.o,$(wildcard *.h))
 
 # subdir hierarchy, compilation database, and all binaries
-all: mkdirs compile_commands.json allBins
+all: $(OBJDIR) $(DEPDIR) compile_commands.json allBins
 
 # all binaries
 allBins: testAdjacency gbaCentrality.so
@@ -20,9 +20,13 @@ testAdjacency: $(OBJDIR)/testAdjacency.o $(OBJS)
 gbaCentrality.so: $(OBJS)
 	$(CC) $(LDFLAGS) -shared -o $@ $^
 
+
 # make subdirs if they don't exist yet
-mkdirs:
-	mkdir -p $(OBJDIR) $(DEPDIR)
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+$(DEPDIR):
+	mkdir -p $(DEPDIR)
+
 
 # use bear to make a compilation database for LSP (usable by emacs and other IDEs)
 # (install bear with "sudo dnf install bear" on RHEL/Alma/Fedora if you don't have it)
@@ -41,4 +45,4 @@ $(OBJDIR)/%.o: %.c Makefile
 clean:
 	rm -f $(OBJDIR)/*.o $(DEPDIR)/*.d compile_commands.json testAdjacency gbaCentrality.so
 
-.PHONY: mkdirs all allBins clean
+.PHONY: all allBins clean
