@@ -28,4 +28,4 @@ contains the gbaCentrality() function (see gbaCentrality.h), which takes as inpu
 ### Dependencies:
 - None for production.
 - For development you should install "bear", which allows to build a compilation database
-  for LSP (usable by emacs and other IDEs). Then call "make" rather than "make all".
+  for LSP (usable by emacs and other IDEs). Then call `make` rather than `make all`.
