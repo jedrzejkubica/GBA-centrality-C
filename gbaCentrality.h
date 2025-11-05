@@ -20,7 +20,6 @@
 #define _GBACENTRALITY_H_
 
 #include "network.h"
-#include "pathCounts.h"
 #include "scores.h"
 
 /*

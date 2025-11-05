@@ -37,7 +37,7 @@ typedef struct {
 /*
   nbNodes = total number of nodes in the network
   nbEdges = total number of edges in the network
-  edges = an array of nbEdges pointers to edges
+  edges = (pointer to) an array of nbEdges edges
 
   NOTE: if the network is undirected each edge must be present twice (A->B and B->A),
   with the same weight
