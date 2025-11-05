@@ -1,6 +1,12 @@
 # GBA-centrality-C
 
-This repository contains the code for the GBA centrality scoring algorithm.
+This repository contains the C code for the GBA centrality scoring algorithm.
+
+It does the heavy lifting behind our [python GBA centrality](https://github.com/jedrzejkubica/GBA-centrality) software.
+
+It can also be used stand-alone by calling the gbaCentrality() function in the
+shared library gbaCentrality.so.
+
 
 ### How to use this repository
 
@@ -17,6 +23,7 @@ contains the gbaCentrality() function (see gbaCentrality.h), which takes as inpu
 - alpha attenuation parameter, must be in ]0,1[, typically 0.5 is good
 - pointer to allocated memory for another geneScores structure, the content will be
   filled by gbaCentrality() with the GBA-centrality scores
+
 
 ### Dependencies:
 - None for production.
