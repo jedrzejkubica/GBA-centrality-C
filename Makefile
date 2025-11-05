@@ -1,5 +1,5 @@
 LDFLAGS = -lm
-CFLAGS = -g -Wall -Wextra -std=c17 -fPIC -fvisibility=hidden
+CFLAGS = -g -Wall -Wextra -std=c17 -O2 -fPIC -fvisibility=hidden
 CC = gcc
 
 OBJDIR = Objs
@@ -8,8 +8,14 @@ DEPDIR = Deps
 ## all shared objects to make
 OBJS = $(patsubst %.h,$(OBJDIR)/%.o,$(wildcard *.h))
 
-# subdir hierarchy, compilation database, and all binaries
-all: $(OBJDIR) $(DEPDIR) compile_commands.json allBins
+# default target
+default: devel
+
+# for production: binaries and shared lib
+all: $(OBJDIR) $(DEPDIR) allBins
+
+# for development: like "all" but also build the LSP compilation database
+devel: $(OBJDIR) $(DEPDIR) compile_commands.json allBins
 
 # all binaries
 allBins: testAdjacency gbaCentrality.so
@@ -45,4 +51,4 @@ $(OBJDIR)/%.o: %.c Makefile
 clean:
 	rm -f $(OBJDIR)/*.o $(DEPDIR)/*.d compile_commands.json testAdjacency gbaCentrality.so
 
-.PHONY: all allBins clean
+.PHONY: default all devel allBins clean
