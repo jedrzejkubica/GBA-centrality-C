@@ -61,7 +61,7 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     size_t k = 1;
     
     // for convergence test
-    SCORETYPE threshold = 1E-6;
+    SCORETYPE threshold = 1E-4;
     SCORETYPE scoresDiff = 1;
 
     while (scoresDiff > threshold) {
@@ -113,7 +113,9 @@ SCORETYPE calculateScoresDiff(geneScores *scores, geneScores *scoresPrev) {
         SCORETYPE diff = scores->scores[i] - scoresPrev->scores[i];
         scoresDiff += diff * diff;
     }
+    if (scoresDiff == 0.0) {
+        return(scoresDiff);
+    }
     scoresDiff = sqrt(scoresDiff);  // L2 norm
-
     return(scoresDiff);
 }
