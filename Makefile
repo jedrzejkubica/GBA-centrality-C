@@ -8,14 +8,11 @@ DEPDIR = Deps
 ## all shared objects to make
 OBJS = $(patsubst %.h,$(OBJDIR)/%.o,$(wildcard *.h))
 
-# default target
-default: devel
+# default target for production: binaries and shared lib
+default: $(OBJDIR) $(DEPDIR) allBins
 
-# for production: binaries and shared lib
-all: $(OBJDIR) $(DEPDIR) allBins
-
-# for development: like "all" but also build the LSP compilation database
-devel: $(OBJDIR) $(DEPDIR) compile_commands.json allBins
+# for development: like "default" but also build the LSP compilation database
+all: $(OBJDIR) $(DEPDIR) compile_commands.json allBins
 
 # all binaries
 allBins: testAdjacency gbaCentrality.so
@@ -51,4 +48,4 @@ $(OBJDIR)/%.o: %.c Makefile
 clean:
 	rm -f $(OBJDIR)/*.o $(DEPDIR)/*.d compile_commands.json testAdjacency gbaCentrality.so
 
-.PHONY: default all devel allBins clean
+.PHONY: default all allBins clean
