@@ -115,7 +115,7 @@ pathCountsMatrix *countPaths(pathCountsWithPredMatrix *pathCountsWithPred, compa
 void printPathCounts(pathCountsMatrix *pathCounts) {
     for (size_t i = 0; i < pathCounts->nbCols; i++) {
         for (size_t j = 0; j < pathCounts->nbCols; j++)
-            printf("%0.2f ", pathCounts->data[i * pathCounts->nbCols + j]);
+            printf("%0.2f ", (float)pathCounts->data[i * pathCounts->nbCols + j]);
 
         printf("\n");
     }
