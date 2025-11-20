@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #include "pathCounts.h"
 #include "compactAdjacency.h"
@@ -63,6 +64,7 @@ pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCoun
       But our approximate solution is efficient, and should largely reduce the
       "hub" issue, ie the explosion of number of walks when going through a hub.
     */
+    #pragma omp parallel for
     for (size_t i = 0; i < nbNodes; i++) {
         for (size_t j = 0; j < nbNodes; j++) {
             for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++) {
@@ -99,6 +101,7 @@ pathCountsMatrix *countPaths(pathCountsWithPredMatrix *pathCountsWithPred, compa
     pathCounts->nbCols = nbNodes;
     pathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * nbNodes * nbNodes, "E: OOM for path counts data\n");
     
+    #pragma omp parallel for
     for (size_t i = 0; i < nbNodes; i++) {
         for (size_t j = 0; j < nbNodes; j++) {
             double sum = 0;

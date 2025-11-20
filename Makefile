@@ -1,5 +1,5 @@
-LDFLAGS = -lm
-CFLAGS = -g -Wall -Wextra -std=c17 -O2 -fPIC -fvisibility=hidden
+LDFLAGS = -lm -fopenmp
+CFLAGS = -g -Wall -Wextra -std=c17 -O2 -fPIC -fvisibility=hidden -fopenmp
 CC = gcc
 
 OBJDIR = Objs
