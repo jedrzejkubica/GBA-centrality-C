@@ -13,7 +13,7 @@ shared library gbaCentrality.so.
 ```
 git clone https://github.com/jedrzejkubica/GBA-centrality-C.git
 cd GBA-centrality-C
-make all
+make
 ```
 
 This generates an executable testAdjacency and a library gbaCentrality.so. The library
@@ -27,5 +27,5 @@ contains the gbaCentrality() function (see gbaCentrality.h), which takes as inpu
 
 ### Dependencies:
 - None for production.
-- For development you should install "bear", which allows to build a compilation database
-  for LSP (usable by emacs and other IDEs). Then call `make` rather than `make all`.
+- For development you could install "bear", which allows to build a compilation database
+  for LSP (usable by emacs and other IDEs). Then call `make all` rather than `make`.
