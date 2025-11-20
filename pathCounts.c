@@ -34,7 +34,7 @@ pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact) 
     pathCounts->data = mallocOrDie(sizeof(PATHCOUNTSTYPE) * sumDegrees * nbNodes, "E: OOM for path counts data\n");
     // set to 0.0 (all-zeroes is not guaranteed to be 0.0)
     for (size_t i = 0; i < sumDegrees * nbNodes; i++)
-        pathCounts->data[i] = 0.0;
+        pathCounts->data[i] = (PATHCOUNTSTYPE)0;
 
     // if i->j is an edge of weight w, then there is a path from i to j
     // with penultimate node i and weight w
