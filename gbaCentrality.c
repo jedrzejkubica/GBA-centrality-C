@@ -111,9 +111,11 @@ SCORETYPE calculateScoresDiff(geneScores *scores, geneScores *scoresPrev) {
     SCORETYPE scoresDiff = 0;
     for (size_t i = 0; i < scores->nbGenes; i++) {
         SCORETYPE diff = scores->scores[i] - scoresPrev->scores[i];
-        scoresDiff += diff * diff;
+        if (diff > 0) {
+            scoresDiff += diff * diff;
+        }
     }
-    if (scoresDiff != 0) {
+    if (scoresDiff > 0) {
         scoresDiff = sqrt(scoresDiff);  // L2 norm
     }
     return(scoresDiff);
