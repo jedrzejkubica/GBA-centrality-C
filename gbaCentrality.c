@@ -107,14 +107,15 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     freeCompactAdjacency(interactomeComp);
 }
 
+/*
+  Return L2-norm of (scores - scoresPrev)
+*/
 SCORETYPE calculateScoresDiff(geneScores *scores, geneScores *scoresPrev) {
-    SCORETYPE scoresDiff = 0;
+    double scoresDiff = 0; // double == high precision for the running sum
     for (size_t i = 0; i < scores->nbGenes; i++) {
-        SCORETYPE diff = scores->scores[i] - scoresPrev->scores[i];
+        double diff = scores->scores[i] - scoresPrev->scores[i];
         scoresDiff += diff * diff;
     }
-    if (scoresDiff != 0) {
-        scoresDiff = sqrt(scoresDiff);  // L2 norm
-    }
+    scoresDiff = sqrt(scoresDiff);
     return(scoresDiff);
 }
