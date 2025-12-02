@@ -70,7 +70,7 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
 
         // scores += alpha**k * causal * B_k
         alphaPowK *= alpha;
-        signalMatrix *interactomeSignal = countPaths(signalCurrent, interactomeComp);
+        signalMatrix *interactomeSignal = signalSum(signalCurrent, interactomeComp);
 
         for (size_t j = 0; j < nbGenes; j++) {
             // calculate sum of column j

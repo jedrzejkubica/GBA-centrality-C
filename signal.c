@@ -31,7 +31,7 @@ signalWithPredMatrix *buildFirstSignal(compactAdjacencyMatrix *compact) {
     size_t nbNodes = compact->nbNodes;
     size_t sumDegrees = compact->offsets[nbNodes];
     
-    signal->data = mallocOrDie(sizeof(SIGNALTYPE) * sumDegrees * nbNodes, "E: OOM for path counts data\n");
+    signal->data = mallocOrDie(sizeof(SIGNALTYPE) * sumDegrees * nbNodes, "E: OOM for signalWithPred data\n");
     // set to 0.0 (all-zeroes is not guaranteed to be 0.0)
     for (size_t i = 0; i < sumDegrees * nbNodes; i++)
         signal->data[i] = (SIGNALTYPE)0;
@@ -49,8 +49,8 @@ signalWithPredMatrix *buildNextSignal(signalWithPredMatrix *signalWithPred, sign
     size_t nbNodes = compact->nbNodes;
     size_t sumDegrees = compact->offsets[nbNodes];
     
-    signalWithPredMatrix *nextSignal = mallocOrDie(sizeof(signalWithPredMatrix), "E: OOM for next path counts\n");
-    nextSignal->data = mallocOrDie(sizeof(SIGNALTYPE) * sumDegrees * nbNodes, "E: OOM for next path counts data\n");
+    signalWithPredMatrix *nextSignal = mallocOrDie(sizeof(signalWithPredMatrix), "E: OOM for next signalWithPred\n");
+    nextSignal->data = mallocOrDie(sizeof(SIGNALTYPE) * sumDegrees * nbNodes, "E: OOM for next signalWithPred data\n");
     
     /*
       Ideally we want to count paths, ie walks that don't contain loops. But this is hard
@@ -69,7 +69,7 @@ signalWithPredMatrix *buildNextSignal(signalWithPredMatrix *signalWithPred, sign
         for (size_t j = 0; j < nbNodes; j++) {
             for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++) {
                 double sum = 0;
-                // ignore loops back to starting node => path count stays zero if i==j
+                // ignore loops back to starting node => signal stays zero if i==j
                 if (i != j) {
                     size_t p = compact->predecessors[offset];
                     sum = signal->data[i * nbNodes + p];
@@ -92,14 +92,14 @@ void freeSignalWithPred(signalWithPredMatrix *signal) {
     free(signal);
 }
 
-signalMatrix *countPaths(signalWithPredMatrix *signalWithPred, compactAdjacencyMatrix *compact) {
-    signalMatrix *signal = mallocOrDie(sizeof(signalMatrix), "E: OOM for path counts matrix\n");
+signalMatrix *signalSum(signalWithPredMatrix *signalWithPred, compactAdjacencyMatrix *compact) {
+    signalMatrix *signal = mallocOrDie(sizeof(signalMatrix), "E: OOM for signalSum matrix\n");
     
     size_t nbNodes = compact->nbNodes;
     size_t sumDegrees = compact->offsets[nbNodes];
     
     signal->nbCols = nbNodes;
-    signal->data = mallocOrDie(sizeof(SIGNALTYPE) * nbNodes * nbNodes, "E: OOM for path counts data\n");
+    signal->data = mallocOrDie(sizeof(SIGNALTYPE) * nbNodes * nbNodes, "E: OOM for signalSum data\n");
     
     #pragma omp parallel for
     for (size_t i = 0; i < nbNodes; i++) {

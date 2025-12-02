@@ -49,8 +49,7 @@ typedef struct {
 
 
 /*
-    data[i*nbCols + j] contains the number of paths
-    (or the sum of path weights for a weighted network)
+    data[i*nbCols + j] contains the sum of signals
     of a given length from node i to j
 */
 typedef struct {
@@ -80,7 +79,7 @@ void freeSignalWithPred(signalWithPredMatrix *signal);
 /*  
     produce signalMatrix corresponding to signalWithPredMatrix
 */
-signalMatrix *countPaths(signalWithPredMatrix *signalWithPred, compactAdjacencyMatrix *compact);
+signalMatrix *signalSum(signalWithPredMatrix *signalWithPred, compactAdjacencyMatrix *compact);
 
 void printSignal(signalMatrix *signal);
 
