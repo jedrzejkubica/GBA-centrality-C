@@ -16,6 +16,9 @@
   If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef _NORMFACTOR_H_
+#define _NORMFACTOR_H_
+
 #include "compactAdjacency.h"
 
 /*
@@ -35,3 +38,5 @@ normFactorVector *buildNormFactorVector(compactAdjacencyMatrix *compact, float a
 
 
 void freeNormFactorVector(normFactorVector *normFactVec);
+
+#endif
