@@ -18,34 +18,34 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <omp.h>
 
 #include "signal.h"
 #include "compactAdjacency.h"
+#include "normFactor.h"
 #include "mem.h"
 
 
-signalWithPredMatrix *buildFirstSignal(compactAdjacencyMatrix *compact) {
-    signalWithPredMatrix *signal = mallocOrDie(sizeof(signalWithPredMatrix), "E: OOM for path counts\n");
-    
+signalWithPredMatrix *buildFirstSignal(compactAdjacencyMatrix *compact, normFactorVector *normFactVec) {
     size_t nbNodes = compact->nbNodes;
     size_t sumDegrees = compact->offsets[nbNodes];
-    
+
+    signalWithPredMatrix *signal = mallocOrDie(sizeof(signalWithPredMatrix), "E: OOM for signalWithPred\n");
     signal->data = mallocOrDie(sizeof(SIGNALTYPE) * sumDegrees * nbNodes, "E: OOM for signalWithPred data\n");
+    
     // set to 0.0 (all-zeroes is not guaranteed to be 0.0)
     for (size_t i = 0; i < sumDegrees * nbNodes; i++)
-        signal->data[i] = (SIGNALTYPE)0;
+        signal->data[i] = 0;
 
-    // if i->j is an edge of weight w, then there is a path from i to j
-    // with penultimate node i and weight w
+    // if i->j is an edge, the signal is already calculated: just use normFactVec
     for (size_t offset = 0; offset < sumDegrees; offset++)
-        signal->data[compact->predecessors[offset] * sumDegrees + offset] = compact->weights[offset];
-
-    return signal;
+        signal->data[compact->predecessors[offset] * sumDegrees + offset] = (SIGNALTYPE)normFactVec->data[offset];
+    return(signal);
 }
 
 signalWithPredMatrix *buildNextSignal(signalWithPredMatrix *signalWithPred, signalMatrix *signal,
-                                              compactAdjacencyMatrix *compact) {
+                                      compactAdjacencyMatrix *compact, normFactorVector *normFactVec) {
     size_t nbNodes = compact->nbNodes;
     size_t sumDegrees = compact->offsets[nbNodes];
     
@@ -53,14 +53,15 @@ signalWithPredMatrix *buildNextSignal(signalWithPredMatrix *signalWithPred, sign
     nextSignal->data = mallocOrDie(sizeof(SIGNALTYPE) * sumDegrees * nbNodes, "E: OOM for next signalWithPred data\n");
     
     /*
-      Ideally we want to count paths, ie walks that don't contain loops. But this is hard
-      to code efficiently...
-      We therefore have an approximate solution, that counts all walks except those that:
+      Ideally we want to propagate along paths, ie walks that don't contain loops. But
+      this is hard to code efficiently...
+      We therefore have an approximate solution, that propagates along all walks except
+      those that:
       - contain a loop (of any length) back to the starting node (with i!=j below);
       - contain a loop of length 2, ie with 2 steps back-and-forth, anywhere in
         the walk (using offsetReverseEdge below).
-      Therefore we are still counting walks that contain an inner loop of length >= 3  (eg
-      i->j->k->m->j will be counted as a length 4 path between i and j)...
+      Therefore we are still propagating along walks that contain an inner loop of
+      length >= 3  (eg i->j->k->m->j will be counted as a length 4 path between i and j)...
       But our approximate solution is efficient, and should largely reduce the
       "hub" issue, ie the explosion of number of walks when going through a hub.
     */
@@ -68,23 +69,22 @@ signalWithPredMatrix *buildNextSignal(signalWithPredMatrix *signalWithPred, sign
     for (size_t i = 0; i < nbNodes; i++) {
         for (size_t j = 0; j < nbNodes; j++) {
             for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++) {
-                double sum = 0;
+                SIGNALTYPE sum = 0;
                 // ignore loops back to starting node => signal stays zero if i==j
                 if (i != j) {
-                    size_t p = compact->predecessors[offset];
-                    sum = signal->data[i * nbNodes + p];
+                    size_t k = compact->predecessors[offset];
+                    sum = signal->data[i * nbNodes + k];
                     // ignore walks whose last step is backtracking on the previous step
                     if (compact->offsetsReverseEdge[offset] < sumDegrees) {
                         sum -= signalWithPred->data[i * sumDegrees + compact->offsetsReverseEdge[offset]];
                     }
-                    sum *= compact->weights[offset];
+                    sum *= normFactVec->data[offset];
                 }
-                nextSignal->data[i * sumDegrees + offset] = (SIGNALTYPE)sum;
+                nextSignal->data[i * sumDegrees + offset] = sum;
             }
         }
     }
-    
-    return nextSignal;
+    return(nextSignal);
 }
 
 void freeSignalWithPred(signalWithPredMatrix *signal) {
@@ -93,11 +93,10 @@ void freeSignalWithPred(signalWithPredMatrix *signal) {
 }
 
 signalMatrix *signalSum(signalWithPredMatrix *signalWithPred, compactAdjacencyMatrix *compact) {
-    signalMatrix *signal = mallocOrDie(sizeof(signalMatrix), "E: OOM for signalSum matrix\n");
-    
     size_t nbNodes = compact->nbNodes;
     size_t sumDegrees = compact->offsets[nbNodes];
-    
+
+    signalMatrix *signal = mallocOrDie(sizeof(signalMatrix), "E: OOM for signalSum matrix\n");
     signal->nbCols = nbNodes;
     signal->data = mallocOrDie(sizeof(SIGNALTYPE) * nbNodes * nbNodes, "E: OOM for signalSum data\n");
     
@@ -108,11 +107,15 @@ signalMatrix *signalSum(signalWithPredMatrix *signalWithPred, compactAdjacencyMa
             for (size_t k = compact->offsets[j]; k < compact->offsets[j + 1]; k++)
                 sum += signalWithPred->data[i * sumDegrees + k];
 
+            if (isinf(sum)) {
+                fprintf(stderr, "ERROR: sum of signal from node %lu to node %lu too large", i, j);
+                exit(1);
+            }
             signal->data[i * nbNodes + j] = (SIGNALTYPE)sum;
         }
     }
     
-    return signal;
+    return(signal);
 }
 
 void printSignal(signalMatrix *signal) {

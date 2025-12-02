@@ -87,7 +87,7 @@ compactAdjacencyMatrix *network2compact(network *N) {
             compact->offsetsReverseEdge[offset] = offsetReverseEdge;
         }
     }
-    return compact;
+    return(compact);
 }
 
 void freeCompactAdjacency(compactAdjacencyMatrix *compact) {

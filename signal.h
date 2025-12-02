@@ -21,7 +21,7 @@
 
 #include <stddef.h>
 #include "compactAdjacency.h"
-
+#include "normFactor.h"
 
 /*
   type to store the sum of path weights of a given length, floating point number
@@ -62,7 +62,7 @@ typedef struct {
     build signalWithPredMatrix for paths of length 1,
     return a pointer to a freshly allocated structure;
 */
-signalWithPredMatrix *buildFirstSignal(compactAdjacencyMatrix *compact);
+signalWithPredMatrix *buildFirstSignal(compactAdjacencyMatrix *compact, normFactorVector *normFactVec);
 
 /*
     build a signalWithPredMatrix for paths of length k+1
@@ -71,7 +71,7 @@ signalWithPredMatrix *buildFirstSignal(compactAdjacencyMatrix *compact);
     return a pointer to a freshly allocated structure;
 */
 signalWithPredMatrix *buildNextSignal(signalWithPredMatrix *signalWithPred, signalMatrix *signal,
-                                              compactAdjacencyMatrix *compact);
+                                              compactAdjacencyMatrix *compact, normFactorVector *normFactVec);
 
 void freeSignalWithPred(signalWithPredMatrix *signal);
 
