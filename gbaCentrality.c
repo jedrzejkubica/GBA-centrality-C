@@ -32,7 +32,7 @@
 /*
   Private function: return sqrt[sum of square of (diff between same-index elements)] 
 */
-static SCORETYPE calculateScoresDiff(geneScores *scores, geneScores *scoresPrev);
+static SIGNALTYPE calculateScoresDiff(signalMatrix *sumOfSignal, size_t nbNodes);
 
 
 void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scores) {
@@ -52,14 +52,12 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     // calculate normalization factors (used in each iteration)
     fprintf(stderr, "INFO gbaCentrality(): calculating normalization factors\n");
     normFactorVector *normFactVec = buildNormFactorVector(interactomeComp, alpha);
+    for (size_t i = 0; i < sumDegrees; i++)
+        fprintf(stderr, "norm factor = %f\n", normFactVec->data[i]);
     
     fprintf(stderr, "INFO gbaCentrality(): calculating B_1\n");
     signalWithPredMatrix *signalCurrent = buildFirstSignal(interactomeComp, normFactVec);
     signalWithPredMatrix *signalNext = NULL;
-
-    geneScores *scoresPrev = mallocOrDie(sizeof(geneScores), "ERROR: OOM for scoresPrev\n");
-    scoresPrev->nbGenes = nbGenes;
-    scoresPrev->scores = mallocOrDie(sizeof(SCORETYPE) * nbGenes, "ERROR: OOM for scoresPrev scores");
 
     size_t k = 1;
     // for convergence test
@@ -67,9 +65,6 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     SCORETYPE scoresDiff = 1;
 
     while (scoresDiff > threshold) {
-        // save scores from B_k-1
-        memcpy(scoresPrev->scores, scores->scores, nbGenes * sizeof(SCORETYPE));
-
         // scores += causal * B_k
         signalMatrix *sumOfSignal = signalSum(signalCurrent, interactomeComp);
 
@@ -80,8 +75,8 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
             }
         }
 
-        // calculate the difference between scores for B_k-1 and B_k
-        scoresDiff = calculateScoresDiff(scores, scoresPrev);
+        // calculate the difference between scores for B_k-1 and B_k,
+        scoresDiff = calculateScoresDiff(sumOfSignal, nbGenes);
         fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
 
         if (scoresDiff > threshold) {
@@ -95,20 +90,17 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
         freeSignal(sumOfSignal);
     }
     freeNormFactorVector(normFactVec);
-    freeScores(scoresPrev);
     freeSignalWithPred(signalCurrent);
     freeCompactAdjacency(interactomeComp);
 }
 
 /*
-  Return L2-norm of sumOfsignals
+  Return L2-norm of sumOfSignal
 */
-// replace with L2-norm of sumOfSignals! TODO
-static SCORETYPE calculateScoresDiff(geneScores *scores, geneScores *scoresPrev) {
-    double scoresDiff = 0; // double == high precision for the running sum
-    for (size_t i = 0; i < scores->nbGenes; i++) {
-        double diff = scores->scores[i] - scoresPrev->scores[i];
-        scoresDiff += diff * diff;
+static SIGNALTYPE calculateScoresDiff(signalMatrix *sumOfSignal, size_t nbNodes) {
+    SIGNALTYPE scoresDiff = 0; // double == high precision for the running sum
+    for (size_t i = 0; i < nbNodes * nbNodes; i++) {
+        scoresDiff += sumOfSignal->data[i] * sumOfSignal->data[i];
     }
     scoresDiff = sqrt(scoresDiff);
     return(scoresDiff);
