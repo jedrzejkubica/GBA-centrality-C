@@ -44,7 +44,7 @@
     edge j->p (assuming i is the offset of edge p->j) if j->p exists, sumOfDegrees
     otherwise
 
-    We must use size_t for offsets, since one pathCountsWithpredMatrix can have
+    We must use size_t for offsets, since one signalWithpredMatrix can have
     more elements than UINT_MAX. Actually we will use size_t everywhere, the
     predecessors is not large anyways.
 */

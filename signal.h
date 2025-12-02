@@ -16,8 +16,8 @@
   If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _PATHCOUNTS_H_
-#define _PATHCOUNTS_H_
+#ifndef _SIGNAL_H_
+#define _SIGNAL_H_
 
 #include <stddef.h>
 #include "compactAdjacency.h"
@@ -27,7 +27,7 @@
   type to store the sum of path weights of a given length, floating point number
   of some precision (eg maybe double)
 */
-#define PATHCOUNTSTYPE float
+#define SIGNALTYPE float
 
 
 /*
@@ -35,13 +35,17 @@
     data is of size offsets[nbNodes]*nbNodes;
     for any k in [0, inDeg(j)-1]:
     data[i*offsets[nbNodes] + offsets[j] + k]
-    is the number of paths (or the sum of path weights for a weighted network)
-    between nodes i and j whose penultimate node is the k'th predecessor 
-    of node j, ie. predecessors[offsets[j] + k]
+    is the "signal" that is propagated from node i to node j via the
+    k'th predecessor of node j, ie. predecessors[offsets[j] + k].
+
+    Ideally this "signal" would be propagated along all "paths" from i to j,
+    normalized by the in-degree of j, and multiuplying by an attenuation factor
+    alpha at each step. However counting paths is hard, so instead we propagate
+    along walks but avoiding backtracks and loops back to the starting node i.
 */
 typedef struct {
-    PATHCOUNTSTYPE *data;
-} pathCountsWithPredMatrix;
+    SIGNALTYPE *data;
+} signalWithPredMatrix;
 
 
 /*
@@ -51,35 +55,35 @@ typedef struct {
 */
 typedef struct {
     size_t nbCols;
-    PATHCOUNTSTYPE *data;
-} pathCountsMatrix;
+    SIGNALTYPE *data;
+} signalMatrix;
 
 
 /*
-    build pathCountsWithPredMatrix for paths of length 1,
+    build signalWithPredMatrix for paths of length 1,
     return a pointer to a freshly allocated structure;
 */
-pathCountsWithPredMatrix *buildFirstPathCounts(compactAdjacencyMatrix *compact);
+signalWithPredMatrix *buildFirstSignal(compactAdjacencyMatrix *compact);
 
 /*
-    build a pathCountsWithPredMatrix for paths of length k+1
-    given pathCountsWithPredMatrix for paths of length k
+    build a signalWithPredMatrix for paths of length k+1
+    given signalWithPredMatrix for paths of length k
     (excluding paths looping back to the starting node),
     return a pointer to a freshly allocated structure;
 */
-pathCountsWithPredMatrix *buildNextPathCounts(pathCountsWithPredMatrix *pathCountsWithPred, pathCountsMatrix *pathCounts,
+signalWithPredMatrix *buildNextSignal(signalWithPredMatrix *signalWithPred, signalMatrix *signal,
                                               compactAdjacencyMatrix *compact);
 
-void freePathCountsWithPred(pathCountsWithPredMatrix *pathCounts);
+void freeSignalWithPred(signalWithPredMatrix *signal);
 
 
 /*  
-    produce pathCountsMatrix corresponding to pathCountsWithPredMatrix
+    produce signalMatrix corresponding to signalWithPredMatrix
 */
-pathCountsMatrix *countPaths(pathCountsWithPredMatrix *pathCountsWithPred, compactAdjacencyMatrix *compact);
+signalMatrix *countPaths(signalWithPredMatrix *signalWithPred, compactAdjacencyMatrix *compact);
 
-void printPathCounts(pathCountsMatrix *pathCounts);
+void printSignal(signalMatrix *signal);
 
-void freePathCounts(pathCountsMatrix *pathCounts);
+void freeSignal(signalMatrix *signal);
 
 #endif

@@ -24,7 +24,7 @@
 #include "gbaCentrality.h"
 #include "network.h"
 #include "compactAdjacency.h"
-#include "pathCounts.h"
+#include "signal.h"
 #include "scores.h"
 #include "mem.h"
 
@@ -50,8 +50,8 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
    
     fprintf(stderr, "INFO gbaCentrality(): calculating B_1\n");
 
-    pathCountsWithPredMatrix *pathCountsCurrent = buildFirstPathCounts(interactomeComp);
-    pathCountsWithPredMatrix *pathCountsNext = NULL;
+    signalWithPredMatrix *signalCurrent = buildFirstSignal(interactomeComp);
+    signalWithPredMatrix *signalNext = NULL;
 
     geneScores *scoresPrev = mallocOrDie(sizeof(geneScores), "ERROR: OOM for scoresPrev\n");
     scoresPrev->nbGenes = nbGenes;
@@ -70,19 +70,19 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
 
         // scores += alpha**k * causal * B_k
         alphaPowK *= alpha;
-        pathCountsMatrix *interactomePathCounts = countPaths(pathCountsCurrent, interactomeComp);
+        signalMatrix *interactomeSignal = countPaths(signalCurrent, interactomeComp);
 
         for (size_t j = 0; j < nbGenes; j++) {
             // calculate sum of column j
             double colSum = 0;
             for (size_t i = 0; i < nbGenes; i++) {
-                colSum += interactomePathCounts->data[i * nbGenes + j];
+                colSum += interactomeSignal->data[i * nbGenes + j];
             }
             // updates scores
             if (colSum != 0) {
                 double scoreSum = 0;
                 for (size_t i = 0; i < nbGenes; i++) {
-                    scoreSum += interactomePathCounts->data[i * nbGenes + j] * causal->scores[i];
+                    scoreSum += interactomeSignal->data[i * nbGenes + j] * causal->scores[i];
                 }
                 scores->scores[j] += alphaPowK * scoreSum / colSum;
             }
@@ -95,15 +95,15 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
         if (scoresDiff > threshold) {
             // build B_(k+1) for next iteration
             fprintf(stderr, "INFO gbaCentrality(): calculating B_%ld\n", k+1);
-            pathCountsNext = buildNextPathCounts(pathCountsCurrent, interactomePathCounts, interactomeComp);
-            freePathCountsWithPred(pathCountsCurrent);
-            pathCountsCurrent = pathCountsNext;
+            signalNext = buildNextSignal(signalCurrent, interactomeSignal, interactomeComp);
+            freeSignalWithPred(signalCurrent);
+            signalCurrent = signalNext;
             k++;
         }
-        freePathCounts(interactomePathCounts);
+        freeSignal(interactomeSignal);
     }
     freeScores(scoresPrev);
-    freePathCountsWithPred(pathCountsCurrent);
+    freeSignalWithPred(signalCurrent);
     freeCompactAdjacency(interactomeComp);
 }
 
