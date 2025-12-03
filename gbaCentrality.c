@@ -52,8 +52,6 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     // calculate normalization factors (used in each iteration)
     fprintf(stderr, "INFO gbaCentrality(): calculating normalization factors\n");
     normFactorVector *normFactVec = buildNormFactorVector(interactomeComp, alpha);
-    for (size_t i = 0; i < sumDegrees; i++)
-        fprintf(stderr, "norm factor = %f\n", normFactVec->data[i]);
     
     fprintf(stderr, "INFO gbaCentrality(): calculating B_1\n");
     signalWithPredMatrix *signalCurrent = buildFirstSignal(interactomeComp, normFactVec);
