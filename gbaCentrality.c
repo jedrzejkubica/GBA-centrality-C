@@ -30,10 +30,9 @@
 
 
 /*
-  Private function: return sqrt[sum of square of (diff between same-index elements)] 
+  Private function: return a norm of the sumOfsignal matrix
 */
-static SIGNALTYPE calculateScoresDiff(signalMatrix *sumOfSignal, size_t nbNodes);
-
+static double calculateNorm(signalMatrix *sumOfSignal);
 
 void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scores) {
     // sanity check:
@@ -58,8 +57,8 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
 
     size_t k = 1;
     // for convergence test
-    SCORETYPE threshold = 1E-4;
-    SCORETYPE scoresDiff = 1;
+    double threshold = 1E-4;
+    double scoresDiff = 1;
 
     while (scoresDiff > threshold) {
         // scores += causal * B_k
@@ -72,8 +71,8 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
             }
         }
 
-        // calculate the difference between scores for B_k-1 and B_k,
-        scoresDiff = calculateScoresDiff(sumOfSignal, nbGenes);
+        // calculate the difference between B_k-1 and B_k
+        scoresDiff = calculateNorm(sumOfSignal);
         fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
 
         if (scoresDiff > threshold) {
@@ -92,13 +91,13 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
 }
 
 /*
-  Return L2-norm of sumOfSignal
+  Return Frobenius norm of sumOfSignal
 */
-static SIGNALTYPE calculateScoresDiff(signalMatrix *sumOfSignal, size_t nbNodes) {
-    SIGNALTYPE scoresDiff = 0; // double == high precision for the running sum
-    for (size_t i = 0; i < nbNodes * nbNodes; i++) {
-        scoresDiff += sumOfSignal->data[i] * sumOfSignal->data[i];
+static double calculateNorm(signalMatrix *sumOfSignal) {
+    double frobNorm = 0; // double == high precision for the running sum
+    for (size_t i = 0; i < sumOfSignal->nbNodes * sumOfSignal->nbNodes; i++) {
+        frobNorm += sumOfSignal->data[i] * sumOfSignal->data[i];
     }
-    scoresDiff = sqrt(scoresDiff);
-    return(scoresDiff);
+    frobNorm = sqrt(frobNorm);
+    return(frobNorm);
 }
