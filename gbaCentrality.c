@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <omp.h>
 
 #include "gbaCentrality.h"
 #include "network.h"
@@ -64,6 +65,7 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
 
     while (scoresDiff > threshold) {
         // update scores with effect of causal genes at distance K: scores += causal * B_k
+        #pragma omp parallel for
         for (size_t j = 0; j < nbGenes; j++) {
             for (size_t i = 0; i < nbGenes; i++) {
                 scores->scores[j] += causal->scores[i] * sumOfSignal->data[i* nbGenes + j];
