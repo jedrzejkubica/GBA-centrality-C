@@ -34,10 +34,11 @@ signalWithPredMatrix *buildFirstSignal(compactAdjacencyMatrix *compact, normFact
     signalWithPredMatrix *signal = mallocOrDie(sizeof(signalWithPredMatrix), "E: OOM for signalWithPred\n");
     signal->data = mallocOrDie(sizeof(SIGNALTYPE) * sumDegrees * nbNodes, "E: OOM for signalWithPred data\n");
     
+    
     // set to 0.0 (all-zeroes is not guaranteed to be 0.0)
     for (size_t i = 0; i < sumDegrees * nbNodes; i++)
         signal->data[i] = 0;
-
+    
     // if i->j is an edge, the signal is already calculated: just use normFactVec
     for (size_t offset = 0; offset < sumDegrees; offset++)
         signal->data[compact->predecessors[offset] * sumDegrees + offset] = (SIGNALTYPE)normFactVec->data[offset];

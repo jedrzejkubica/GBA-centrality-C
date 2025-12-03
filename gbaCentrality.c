@@ -71,7 +71,7 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
         for (size_t j = 0; j < nbGenes; j++) {
             for (size_t i = 0; i < nbGenes; i++) {
                 // updates scores: vector * B_k
-                scores->scores[j] += sumOfSignal->data[i* sumDegrees + j] * causal->scores[i];
+                scores->scores[j] += sumOfSignal->data[i* nbGenes + j] * causal->scores[i];
             }
         }
 

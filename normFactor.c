@@ -36,7 +36,7 @@ normFactorVector *buildNormFactorVector(compactAdjacencyMatrix *compact, float a
     normFactVec->data = mallocOrDie(sizeof(float) * sumDegrees, "E: OOM for normFact\n");
 
     // set to 0.0 (all-zeroes is not guaranteed to be 0.0)
-    for (size_t i = 0; i < sumDegrees * nbNodes; i++)
+    for (size_t i = 0; i < sumDegrees; i++)
         normFactVec->data[i] = 0;
 
     for (size_t j = 0; j < nbNodes; j++) {
