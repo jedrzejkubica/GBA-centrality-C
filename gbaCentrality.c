@@ -47,7 +47,6 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     memcpy(scores->scores, causal->scores, nbGenes * sizeof(SCORETYPE));
 
     compactAdjacencyMatrix *interactomeComp = network2compact(N);
-    size_t sumDegrees = interactomeComp->offsets[nbGenes];
 
     // calculate normalization factors (used in each iteration)
     fprintf(stderr, "INFO gbaCentrality(): calculating normalization factors\n");
