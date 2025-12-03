@@ -49,11 +49,11 @@ typedef struct {
 
 
 /*
-    data[i*nbCols + j] contains the sum of signals
+    data[i*nbNodes + j] contains the sum of signals
     of a given length from node i to j
 */
 typedef struct {
-    size_t nbCols;
+    size_t nbNodes;
     SIGNALTYPE *data;
 } signalMatrix;
 

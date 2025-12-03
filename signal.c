@@ -98,7 +98,7 @@ signalMatrix *signalSum(signalWithPredMatrix *signalWithPred, compactAdjacencyMa
     size_t sumDegrees = compact->offsets[nbNodes];
 
     signalMatrix *signal = mallocOrDie(sizeof(signalMatrix), "E: OOM for signalSum matrix\n");
-    signal->nbCols = nbNodes;
+    signal->nbNodes = nbNodes;
     signal->data = mallocOrDie(sizeof(SIGNALTYPE) * nbNodes * nbNodes, "E: OOM for signalSum data\n");
     
     #pragma omp parallel for
@@ -120,9 +120,9 @@ signalMatrix *signalSum(signalWithPredMatrix *signalWithPred, compactAdjacencyMa
 }
 
 void printSignal(signalMatrix *signal) {
-    for (size_t i = 0; i < signal->nbCols; i++) {
-        for (size_t j = 0; j < signal->nbCols; j++)
-            printf("%0.2f ", (float)signal->data[i * signal->nbCols + j]);
+    for (size_t i = 0; i < signal->nbNodes; i++) {
+        for (size_t j = 0; j < signal->nbNodes; j++)
+            printf("%0.2f ", (float)signal->data[i * signal->nbNodes + j]);
 
         printf("\n");
     }
