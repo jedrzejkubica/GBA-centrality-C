@@ -22,6 +22,9 @@
 #include "network.h"
 #include "scores.h"
 
+// define DEBUG for additional debugging logs
+// #define DEBUG
+
 /*
   gbaCentrality() is the only symbol we want to export in the shared library
   -> we will compile with -fvisibility=hidden and changed to "default" here

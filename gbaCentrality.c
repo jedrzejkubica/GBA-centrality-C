@@ -50,14 +50,22 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     compactAdjacencyMatrix *interactomeComp = network2compact(N);
 
     // calculate normalization factors (used in each iteration)
-    fprintf(stderr, "INFO gbaCentrality(): calculating normalization factors\n");
-    normFactorVector *normFactVec = buildNormFactorVector(interactomeComp, alpha);
+
+    #ifdef DEBUG
+        fprintf(stderr, "INFO gbaCentrality(): calculating normalization factors\n");
+    #endif
+    normFactorVector *normFactVec = buildNormFactorVector(networkComp, alpha);
     
-    fprintf(stderr, "INFO gbaCentrality(): calculating B_1\n");
-    signalWithPredMatrix *signalCurrent = buildFirstSignal(interactomeComp, normFactVec);
-    signalMatrix *sumOfSignal = signalSum(signalCurrent, interactomeComp);
-    double scoresDiff = calculateNorm(sumOfSignal);;
-    fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
+    #ifdef DEBUG
+        fprintf(stderr, "INFO gbaCentrality(): calculating B_1\n");
+    #endif
+    signalWithPredMatrix *signalCurrent = buildFirstSignal(networkComp, normFactVec);
+    signalMatrix *sumOfSignal = signalSum(signalCurrent, networkComp);
+
+    double scoresDiff = calculateNorm(sumOfSignal);
+    #ifdef DEBUG
+        fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
+    #endif
 
     size_t k = 1;
     // for convergence test
@@ -73,14 +81,20 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
         }
 
         // build B_(k+1) for next iteration
-        fprintf(stderr, "INFO gbaCentrality(): calculating B_%ld\n", k+1);
-        signalWithPredMatrix *signalNext = buildNextSignal(signalCurrent, sumOfSignal, interactomeComp, normFactVec);
+
+        #ifdef DEBUG
+            fprintf(stderr, "INFO gbaCentrality(): calculating B_%ld\n", k+1);
+        #endif
+        signalWithPredMatrix *signalNext = buildNextSignal(signalCurrent, sumOfSignal, networkComp, normFactVec);
+
         freeSignalWithPred(signalCurrent);
         signalCurrent = signalNext;
         freeSignal(sumOfSignal);
         sumOfSignal = signalSum(signalCurrent, interactomeComp);
         scoresDiff = calculateNorm(sumOfSignal);
-        fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
+        #ifdef DEBUG
+            fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
+        #endif
         k++;
     }
     freeNormFactorVector(normFactVec);

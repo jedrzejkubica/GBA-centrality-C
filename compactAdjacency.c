@@ -33,8 +33,6 @@ compactAdjacencyMatrix *network2compact(network *N) {
     } else if (nbSelfLoops > 0) {
         fprintf(stderr, "WARNING: your network has %li self-loops, they have been removed\n", nbSelfLoops);
     }
-
-    fprintf(stderr, "network2compact: %lu edges between %lu nodes\n", N->nbEdges, N->nbNodes);
     
     compactAdjacencyMatrix *compact = mallocOrDie(sizeof(compactAdjacencyMatrix), "E: OOM for compact\n");
 
