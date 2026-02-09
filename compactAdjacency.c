@@ -30,10 +30,12 @@ compactAdjacencyMatrix *network2compact(network *N) {
     if (nbSelfLoops == -1) {
         fprintf(stderr, "E: weights are not in ]0, 1], please fix the network\n");
         exit(1);
-    } else if (nbSelfLoops > 0) {
+    } else if (nbSelfLoops == 1) {
+        fprintf(stderr, "WARNING: your network has 1 self-loop, it has been removed\n");
+    } else if (nbSelfLoops > 1) {
         fprintf(stderr, "WARNING: your network has %li self-loops, they have been removed\n", nbSelfLoops);
     }
-    
+   
     compactAdjacencyMatrix *compact = mallocOrDie(sizeof(compactAdjacencyMatrix), "E: OOM for compact\n");
 
     compact->nbNodes = N->nbNodes;
