@@ -52,7 +52,7 @@ normFactorVector *buildNormFactorVector(compactAdjacencyMatrix *compact, float a
         if (sumAsFloat != 0)
             for (size_t offset = compact->offsets[j]; offset < compact->offsets[j + 1]; offset++)
                 // i is implicit here, it is compact->predecessors[offset]
-                normFactVec->data[offset] = alpha * compact->weights[offset] / sumAsFloat;
+                normFactVec->data[offset] = alpha * compact->weights[offset] * compact->weights[offset] / sumAsFloat;
         // else it stays zero
     }
     return(normFactVec);
