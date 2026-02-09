@@ -47,7 +47,7 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     // start by copying causal scores, ie scores = alpha**0 * causal * I
     memcpy(scores->scores, causal->scores, nbGenes * sizeof(SCORETYPE));
 
-    compactAdjacencyMatrix *interactomeComp = network2compact(N);
+    compactAdjacencyMatrix *networkComp = network2compact(N);
 
     // calculate normalization factors (used in each iteration)
 
@@ -90,7 +90,7 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
         freeSignalWithPred(signalCurrent);
         signalCurrent = signalNext;
         freeSignal(sumOfSignal);
-        sumOfSignal = signalSum(signalCurrent, interactomeComp);
+        sumOfSignal = signalSum(signalCurrent, networkComp);
         scoresDiff = calculateNorm(sumOfSignal);
         #ifdef DEBUG
             fprintf(stderr, "INFO gbaCentrality(): scoresDiff = %f\n", scoresDiff);
@@ -100,7 +100,7 @@ void gbaCentrality(network *N, geneScores *causal, float alpha, geneScores *scor
     freeNormFactorVector(normFactVec);
     freeSignalWithPred(signalCurrent);
     freeSignal(sumOfSignal);
-    freeCompactAdjacency(interactomeComp);
+    freeCompactAdjacency(networkComp);
 }
 
 /*
