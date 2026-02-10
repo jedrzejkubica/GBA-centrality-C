@@ -13,7 +13,7 @@ make
 
 This generates an executable `testAdjacency` and a shared library `gbaCentrality.so`.
 
-To make sure the installation is correct, run `testAdjacency`, which computes and prints GBA centrality scores for three example networks.
+To make sure the installation is correct, run `testAdjacency`, which computes and prints GBA centrality scores for four example networks.
 
 ## Use GBA-centrality-C
 
